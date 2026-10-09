@@ -1,0 +1,1984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+         input::placeholder {
+            font-size: 16px;
+            font-weight: bold;
+            color: #555;
+            opacity: 0.8;
+        }
+
+       
+
+        input {
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .card-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px white;
+            width: 90vw;
+            margin: auto;
+            position: absolute;
+    
+        }
+
+        /* Teacher Availability Section */
+#availability-section {
+    display: none;
+    margin: 30px auto;
+    width: 100%;
+    height: 20%;
+    max-width: 1000px;
+    max-height: 1000px;
+    text-align: center;
+    position: absolute;
+    top: 300px;
+    bottom: 30px;
+    left:200px;
+    right:40px;
+}
+.kanak,.tanishka,.noor{
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px white;
+            width: 90vw;
+            margin: auto;
+            position: absolute;
+    top: 200px;
+    bottom: 100px;
+    left:100px;
+    right:40px;
+        }
+        /* Table Styling */
+        #student-details-section table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.995);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px black;
+        }
+
+        #student-details-section th {
+            background: #4A00E0;
+            color: white;
+            padding: 12px;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        #student-details-section td {
+            padding: 10px;
+            color: black;
+            border-bottom: 2px solid #4A00E0;
+            border-right: 2px solid #4A00e0;
+            text-align: center;
+        }
+
+        #student-details-section tr:nth-child(even) {
+            background: white;
+        }
+
+        #student-details-section tr:hover {
+            background: white;
+            transition: 0.3s;
+        }
+
+        @media screen and (max-width: 768px) {
+            #student-details-section table {
+                font-size: 14px;
+            }
+        }
+
+        #add-result-section h2, #results-section h2, 
+        #quiz-results-section h2, #add-student-section h2 {
+            color: white;
+        }
+
+        #results-section table, #quiz-results-section table {
+            color: black;
+        }
+
+        /* Center semester exam section */
+       #semester-exam-section,
+#exam-form-section,
+#quiz-section,
+#quiz-form-section {
+    margin: 30px auto;
+    display: none;
+    width: 100%;
+max-width: 1000px;
+margin: auto;
+            
+}
+
+        /* Chatbot Styles */
+        #chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 380px;
+            height: 500px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 40px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            z-index: 9999;
+            font-family: Arial, sans-serif;
+        }
+
+        #chatbot-header {
+            background: linear-gradient(135deg, #4A00E0, #7928CA);
+            color: white;
+            padding: 15px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        #chatbot-close {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        #chatbot-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: #f9f9f9;
+        }
+
+        .chatbot-message {
+            margin-bottom: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 90%;
+            word-wrap: break-word;
+        }
+
+        .bot-message {
+            background: #E8DAEF;
+            color: #333;
+            border-left: 4px solid #4A00E0;
+        }
+
+        .user-message {
+            background: #4A00E0;
+            color: white;
+            margin-left: auto;
+        }
+
+        #chatbot-input-area {
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            gap: 10px;
+        }
+
+        #chatbot-input {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        #chatbot-send {
+            background: #4A00E0;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #chatbot-send:hover {
+            background: #3300c3;
+        }
+
+        #chatbot-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4A00E0, #7928CA);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(74, 0, 224, 0.4);
+            z-index: 9998;
+        }
+
+        #chatbot-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .quick-suggestions {
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .suggestion-btn {
+            display: inline-block;
+            background: #E8DAEF;
+            border: 1px solid #4A00E0;
+            padding: 6px 10px;
+            border-radius: 5px;
+            margin: 2px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #4A00E0;
+        }
+
+        .suggestion-btn:hover {
+            background: #D7C8E3;
+        }
+
+        @media (max-width: 600px) {
+            #chatbot-container {
+                width: 300px;
+                height: 400px;
+                bottom: 10px;
+                right: 10px;
+            }
+        }
+
+        /* Teacher Details Button (Icon) */
+        .teacher-details-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.3s;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            opacity: 1;
+            filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
+        }
+
+        .teacher-details-btn:hover {
+            transform: scale(1.2);
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Teacher Details Modal/Section */
+        #teacher-details-section {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            z-index: 10000;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .teacher-details-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+        }
+
+        .teacher-details-modal-overlay.show {
+            display: block;
+        }
+
+        #teacher-details-section.show {
+            display: block;
+        }
+
+        #teacher-details-section h2 {
+            color: #4A00E0;
+            margin-bottom: 20px;
+        }
+
+        #teacher-details-section input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #4A00E0;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        #teacher-details-section button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            background: #4A00E0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #teacher-details-section button:hover {
+            background: #3300c3;
+        }
+
+        .close-btn {
+            background: #f70a0a;
+            width: auto;
+            float: right;
+            padding: 5px 10px;
+        }
+
+        .close-btn:hover {
+            background: #d10a0a;
+        }
+
+        /* Welcome Header */
+        .welcome-header {
+            text-align: center;
+            padding: 30px;
+            background: rgba(74, 0, 224, 0.1);
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .welcome-header h1 {
+            color: #4A00E0;
+            font-size: 32px;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .welcome-header p {
+            color: white;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <span>Teacher Dashboard</span>
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <button class="teacher-details-btn" onclick="openTeacherDetails()" title="Teacher Details">👤</button>
+            <button class="logout-btn" style="background:#6c63ff;" onclick="event.stopPropagation(); window.location.href='/account'" id="password-btn" type="button">Password</button>
+            <button class="logout-btn">Logout</button>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <button onclick="showSection('add-result')">Add Result</button>
+            <button onclick="showSection('results')">IAT Results</button>
+            <button onclick="showSection('quiz-results')">Quiz Scores</button>
+            <button onclick="showSection('student-details')">Student Details</button>
+            <button onclick="showSection('availability')">Teacher Availability</button>
+            <button onclick="showSection('semester-exam')">IAT Exam</button>
+            <button onclick="showSection('quiz')">Quiz</button>
+            <button onclick="showSection('attendance')">Attendance</button>
+           
+            
+        </div>
+
+        <div id="content-section">
+
+
+            <div id="review-section" class="hidden-section card-container">
+    <h2 style="color:white;">Exam Review Sheet</h2>
+
+    <table>
+        <tr>
+            <th>Student</th>
+            <th>Q1</th>
+            <th>Q2</th>
+            <th>Q3</th>
+            <th>Marks</th>
+        </tr>
+
+        {% for row in responses %}
+        <tr>
+            <td>{{ row.student_email }}</td>
+            <td>{{ row.q1 }}</td>
+            <td>{{ row.q2 }}</td>
+            <td>{{ row.q3 }}</td>
+            <td>
+                <input type="number" value="{{ row.marks }}"
+                       onchange="updateMarks('{{ row.id }}', this.value)">
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+            <!-- Welcome Header Section -->
+            <div id="welcome-section" class="hidden-section" style="text-align: center; padding: 30px; background: rgba(74, 0, 224, 0.1); border-radius: 15px; margin-bottom: 30px; display: none;">
+                <h1 style="color: #4A00E0; font-size: 32px; margin: 0; text-transform: uppercase; letter-spacing: 2px;">Welcome, Prof. <span id="teacherNameDisplay">{{ teacher[0] if teacher else 'Teacher' }}</span>! 👋</h1>
+                <p style="color: white; font-size: 16px; margin-top: 10px;" id="teacherEmailDisplay">{{ teacher_email }}</p>
+            </div>
+
+            <!-- Teacher Details Modal -->
+            <div class="teacher-details-modal-overlay" id="teacherDetailsOverlay" onclick="closeTeacherDetails()"></div>
+            <div id="teacher-details-modal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.3); z-index: 10000; width: 90%; max-width: 500px;">
+                <button class="close-btn" onclick="closeTeacherDetails()" style="background: #f70a0a; color: white; border: none; padding: 5px 10px; margin-bottom: 15px; border-radius: 3px; cursor: pointer;">✕</button>
+                <h2 style="color: #4A00E0; margin-top: 0;">Teacher Details</h2>
+                <form id="teacherDetailsForm">
+                    <input type="hidden" id="teacherEmail" name="email" value="{{ teacher_email }}">
+                    <input type="text" id="teacherName" placeholder="Full Name" required>
+                    <input type="tel" id="teacherPhone" placeholder="Phone Number" required>
+                    <input type="text" id="teacherDepartment" placeholder="Department" required>
+                    <input type="text" id="teacherSubject" placeholder="Subject" required>
+                    <button type="submit" style="width: 100%; padding: 12px; margin-top: 15px; background: #4A00E0; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 16px;">Save Details</button>
+                </form>
+            </div>
+
+            <!-- Student Details Section -->
+            <div id="student-details-section" class="hidden-section card-container">
+    <h2 style="color: white;">Student Details</h2>
+    <table>
+        <tr>
+            <th>Email</th>
+            <th>Name</th>
+            <th>Roll No</th>
+            <th>Course</th>
+            <th>Division</th>
+            <th>Fees</th>
+        </tr>
+        {% for student in student_details %}
+        <tr>
+            <td>{{ student[0] }}</td>
+            <td>{{ student[1] }}</td>
+            <td>{{ student[2] }}</td>
+            <td>{{ student[3] }}</td>
+            <td>{{ student[4] }}</td>
+            <td>{{ student[5] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+            <!-- Add Result Section -->
+            <div id="add-result-section" class="hidden-section card-container">
+                <h2>Add Student Result</h2>
+                <form action="/add_result" method="post">
+                    <input type="hidden" name="teacher_email" value="{{ teacher_email }}">
+                    <table>
+                        <tr>
+                            <th>Student Email</th>
+                            <th>Subject</th>
+                            <th>Marks</th>
+                            <th>Action</th>
+                        </tr>
+                        <tr>
+<td>
+    <select name="student_email" required style="padding:8px;">
+        <option value="">-- Select Student --</option>
+        {% for student in student_details %}
+            <option value="{{ student[0] }}">
+                {{ student[1] }} ({{ student[0] }})
+            </option>
+        {% endfor %}
+    </select>
+</td>                            <td><input type="text" name="subject" placeholder="Enter Subject" required></td>
+                            <td><input type="number" name="marks" placeholder="Enter Marks" min="0" max="100" required></td>
+                            <td><button type="submit">Add</button></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+
+            <!-- Student Results Section -->
+            <div id="results-section" class="hidden-section card-container">
+                <h2>Student Results</h2>
+                <div style="margin-bottom:15px;">
+    <button onclick="window.location.href='/iat_analysis/{{ teacher_email }}'"
+        style="padding:10px 18px; background:#4A00E0; color:white; border:none; border-radius:6px; cursor:pointer;">
+        View IAT Analysis
+    </button>
+</div>
+                <table>
+                    <tr>
+                        <th>Student Email</th>
+                        <th>Subject</th>
+                        <th>Marks</th>
+                    </tr>
+                    {% set latest_results = {} %}
+                    {% for result in results %}
+                        {% set key = result[1] ~ result[2] %}
+                        {% set latest_results = latest_results.update({key: result}) or latest_results %}
+                    {% endfor %}
+                    {% for key, result in latest_results.items() %}
+                    <tr>
+                        <td>{{ result[1] }}</td>
+                        <td>{{ result[2] }}</td>
+                        <td>{{ result[3] }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <!-- Quiz Scores Section -->
+            <div id="quiz-results-section" class="hidden-section card-container">
+                <h2>Quiz Scores</h2>
+                <div style="margin-bottom:15px;">
+    <button onclick="window.location.href='/quiz_analysis/{{ teacher_email }}'"
+        style="padding:10px 18px; background:#4A00E0; color:white; border:none; border-radius:6px; cursor:pointer;">
+        View Quiz Analysis
+    </button>
+</div>
+                <table>
+                    <tr>
+                        <th>Student Email</th>
+                        <th>Subject</th>
+                        <th>Score</th>
+                        <th>Total Questions</th>
+                    </tr>
+                    {% set latest_quiz_scores = {} %}
+                    {% for quiz in quiz_results %}
+                        {% set key = quiz[0] ~ quiz[1] %}
+                        {% set latest_quiz_scores = latest_quiz_scores.update({key: quiz}) or latest_quiz_scores %}
+                    {% endfor %}
+                    {% for key, quiz in latest_quiz_scores.items() %}
+                    <tr>
+                        <td>{{ quiz[0] }}</td>
+                        <td>{{ quiz[1] }}</td>
+                        <td>{{ quiz[2] }}</td>
+                        <td>{{ quiz[3] }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <!-- Add Student Details Section -->
+            <div id="add-student-section" class="hidden-section card-container">
+                <h2>Add Student Details</h2>
+                <form action="/add_student_details" method="post">
+                    <input type="hidden" name="teacher_email" value="{{ teacher_email }}">
+                    <input type="text" name="student_name" placeholder="Enter Student Name" required><br><br>
+                    <input type="email" name="student_email" placeholder="Enter Student Email" required><br><br>
+                    <input type="text" name="student_roll" placeholder="Enter Roll No" required><br><br>
+                    <input type="text" name="student_course" placeholder="Enter Course" required><br><br>
+                    <input type="text" name="student_div" placeholder="Enter Division" required><br><br>
+                    <input type="number" name="student_fees" placeholder="Enter Fees" required><br><br>
+                    <button type="submit">Add Student</button>
+                </form>
+                
+            </div>
+
+            </div>
+             <div id="add-student-section" class="hidden-section card-container">
+        ...
+    </div>
+
+    <!-- Semester Exam Section -->
+<div id="semester-exam-section" class="hidden-section card-container noor" style="background: rgba(74, 0, 224, 0.2) !important; padding: 30px !important; width: 90vw !important;">
+    <h2 style="color:white;">IAT Exam Management</h2><br><br><br><br>
+    <div id="exam-subjects-container" style="display: flex; flex-wrap: wrap; gap: 15px; justify-content:center;"></div><br><br>
+</div>
+
+    <!-- Exam Question Input Form -->
+<div id="exam-form-section" class="hidden-section card-container noor" style="background: rgba(74, 0, 224, 0.15) !important; padding: 30px !important; width: 85vw !important; display: none !important;">
+    <h2 style="color:white;">Create Exam</h2>
+
+    <h3 id="selected-subject" style="color:white;"></h3>
+
+    <div id="question-inputs"></div>
+
+    <br>
+</div>
+
+<!-- Quiz Management Section -->
+<div id="quiz-section" class="hidden-section card-container tanishka" style="background: rgba(74, 0, 224, 0.2) !important; padding: 30px !important; width: 90vw !important;">
+    <h2 style="color:white;">Quiz Management</h2><br><br>
+    <div id="quiz-subjects-container" style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center;"></div><br><br>
+</div>
+
+<!-- Quiz Question Input Form -->
+<div id="quiz-form-section" class="hidden-section card-container noor" style="background: rgba(74, 0, 224, 0.15) !important; padding: 30px !important; width: 85vw !important; display: none !important;">
+    <h2 style="color:white;">Create Quiz</h2>
+
+    <h3 id="selected-quiz-subject" style="color:white;"></h3>
+
+    <div id="quiz-question-inputs" style="max-height: 500px; overflow-y: auto;"></div>
+
+    <br>
+</div>
+
+    <div id="availability-section" class="hidden-section card-container carddd" data-availability="{{ (availability[0] if availability else 0)|int }}">
+        <h2 style="color: white;">Teacher Availability</h2>
+<br>
+        <p style="color:white;">Status: 
+            <span id="statusText">Not Available</span><br><br>
+        </p>
+
+        <button id="toggleBtn" onclick="toggleAvailability()"
+            style="padding:15px; font-size:16px; background:red; color:white; border:none; border-radius:8px;">
+            OFF
+        </button>
+    </div>
+
+    <div id="attendance-section" class="hidden-section card-container kanak">
+    <h2 style="color:white;">Student Attendance - <span id="attendance-teacher-name" style="color: #FFD700;">{{ teacher_name }}</span></h2>
+    <div style="margin-bottom:15px;">
+    <button onclick="window.location.href='/attendance_analysis/{{ teacher_email }}'"
+        style="padding:10px 18px; background:#4A00E0; color:white; border:none; border-radius:6px; cursor:pointer;">
+        View Attendance Analysis
+    </button>
+</div>
+             
+    <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+        <label style="color: white; font-weight: bold; margin-right: 15px;">Subject:</label>
+        <select id="attendanceSubject" style="padding:10px; border: 2px solid #4A00E0; border-radius: 5px; min-width: 200px;">
+            <option value="">-- Choose Subject --</option> 
+            <option value="MC">Mobile Computing</option>
+            <option value="IOT">Internet of Things</option>
+            <option value="SPCC">System Programming</option>
+            <option value="AI">Artificial Intelligence</option>
+        </select>
+    </div>
+
+    <label style="color: white; font-weight: bold;">Date:</label>
+    <input type="date" id="attendanceDate" style="padding:10px;"><br><br>
+
+    <table style="width:100%; background:white; border-radius:10px;">
+        <tr>
+            <th>Email</th>
+            <th>Name</th>
+            <th>Status</th>
+        </tr>
+
+        {% for student in students %}
+        <tr>
+            <td>{{ student[0] }}</td>
+            <td>{{ student[1] }}</td>
+            <td>
+                <select id="status-{{ student[0] }}">
+                    <option value="Present">Present</option>
+                    <option value="Absent">Absent</option>
+                </select>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br>
+    <button onclick="saveAttendance()" 
+        style="padding:10px; background:green; color:white; border:none; border-radius:5px;">
+        Save Attendance
+    </button>
+</div>
+
+<!-- Assignments Section -->
+<div id="assignments-section" class="hidden-section card-container">
+    <h2 style="color: white;">Upload Assignments</h2>
+    <div style="display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap;" id="assignment-subject-buttons"></div>
+    
+    <div id="assignment-upload-container" style="display: none; background: white; padding: 20px; border-radius: 10px;">
+        <h3 id="assignment-subject-title" style="color: #4A00E0;"></h3>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="color: #333; font-weight: bold;">Assignment Title:</label><br>
+            <input type="text" id="assignment-title" placeholder="e.g., Chapter 5 - Problem Solving" style="width: 100%; padding: 10px; border: 2px solid #ccc; border-radius: 5px; margin-top: 10px; box-sizing: border-box;">
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="color: #333; font-weight: bold;">Description:</label><br>
+            <textarea id="assignment-description" placeholder="Assignment instructions and details..." style="width: 100%; padding: 10px; border: 2px solid #ccc; border-radius: 5px; margin-top: 10px; height: 100px; box-sizing: border-box; font-family: Arial;"></textarea>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="color: #333; font-weight: bold;">Deadline:</label><br>
+            <input type="date" id="assignment-deadline" style="width: 100%; padding: 10px; border: 2px solid #ccc; border-radius: 5px; margin-top: 10px; box-sizing: border-box;">
+        </div>
+        
+        <button onclick="uploadAssignment()" style="padding: 10px 20px; background: #4A00E0; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%;">📤 Upload Assignment</button>
+    </div>
+    
+    <div id="assignment-no-subject" style="background: white; padding: 20px; border-radius: 10px; text-align: center; color: #666;">
+        <p>Select a subject to upload assignments.</p>
+    </div>
+</div>
+
+<!-- Study Materials Section -->
+<div id="study-materials-section" class="hidden-section card-container">
+    <h2 style="color: white;">Upload Study Materials</h2>
+    <div style="display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap;" id="material-subject-buttons"></div>
+    
+    <div id="material-upload-container" style="display: none; background: white; padding: 20px; border-radius: 10px;">
+        <h3 id="material-subject-title" style="color: #4A00E0;"></h3>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="color: #333; font-weight: bold;">Material Title:</label><br>
+            <input type="text" id="material-title" placeholder="e.g., Chapter 5 - Notes" style="width: 100%; padding: 10px; border: 2px solid #ccc; border-radius: 5px; margin-top: 10px; box-sizing: border-box;">
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="color: #333; font-weight: bold;">Material Type:</label><br>
+            <select id="material-type" style="width: 100%; padding: 10px; border: 2px solid #ccc; border-radius: 5px; margin-top: 10px; box-sizing: border-box;">
+                <option value="PDF">PDF Notes</option>
+                <option value="PowerPoint">PowerPoint Presentation</option>
+                <option value="Video">Video Lecture</option>
+                <option value="Document">Document</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+        
+        <div style="border: 2px dashed #4A00E0; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 20px;">
+            <input type="file" id="material-file-input" style="display: none;">
+            <button onclick="document.getElementById('material-file-input').click()" style="padding: 10px 20px; background: #4A00E0; color: white; border: none; border-radius: 5px; cursor: pointer;">📁 Choose File</button>
+            <p id="material-file-name" style="margin-top: 10px; color: #666;"></p>
+        </div>
+        
+        <button onclick="uploadMaterial()" style="padding: 10px 20px; background: #4A00E0; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%;">📤 Upload Material</button>
+    </div>
+    
+    <div id="material-no-subject" style="background: white; padding: 20px; border-radius: 10px; text-align: center; color: #666;">
+        <p>Select a subject to upload study materials.</p>
+    </div>
+</div>
+
+<!-- Leave Request Section -->
+<div id="leave-request-section" class="hidden-section card-container">
+    <h2 style="color: white;">Teacher Leave Request</h2>
+    <div style="background: white; padding: 20px; border-radius: 10px;">
+        <h3 style="color: #4A00E0; margin-top: 0;">Apply for Leave</h3>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="color: #333; font-weight: bold;">Leave Type:</label><br>
+            <select id="leave-type" style="width: 100%; padding: 10px; border: 2px solid #ccc; border-radius: 5px; margin-top: 10px; box-sizing: border-box;">
+                <option value="">-- Select Leave Type --</option>
+                <option value="Sick Leave">Sick Leave</option>
+                <option value="Casual Leave">Casual Leave</option>
+                <option value="Emergency Leave">Emergency Leave</option>
+                <option value="Annual Leave">Annual Leave</option>
+            </select>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="color: #333; font-weight: bold;">From Date:</label><br>
+            <input type="date" id="leave-from-date" style="width: 100%; padding: 10px; border: 2px solid #ccc; border-radius: 5px; margin-top: 10px; box-sizing: border-box;">
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="color: #333; font-weight: bold;">To Date:</label><br>
+            <input type="date" id="leave-to-date" style="width: 100%; padding: 10px; border: 2px solid #ccc; border-radius: 5px; margin-top: 10px; box-sizing: border-box;">
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="color: #333; font-weight: bold;">Reason:</label><br>
+            <textarea id="leave-reason" placeholder="Provide reason for leave..." style="width: 100%; padding: 10px; border: 2px solid #ccc; border-radius: 5px; margin-top: 10px; height: 100px; box-sizing: border-box; font-family: Arial;"></textarea>
+        </div>
+        
+        <button onclick="submitLeaveRequest()" style="padding: 10px 20px; background: #4A00E0; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%;">📤 Submit Leave Request</button>
+        
+        <hr style="margin: 30px 0; border: none; border-top: 2px solid #ddd;">
+        
+        <h3 style="color: #4A00E0;">My Leave Requests</h3>
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr style="background: #4A00E0; color: white;">
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Leave Type</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">From</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">To</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Status</th>
+                </tr>
+                <tbody id="leave-requests-table-body">
+                    <tr>
+                        <td colspan="4" style="padding: 15px; text-align: center; color: #999;">No leave requests yet.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+        </div>
+
+    <!-- Chatbot Widget -->
+    <button id="chatbot-toggle" onclick="toggleChatbot()">💬</button>
+    
+    <div id="chatbot-container" style="display: none;">
+        <div id="chatbot-header">
+            <span>Teacher Guide Assistant</span>
+            <button id="chatbot-close" onclick="toggleChatbot()">✕</button>
+        </div>
+        <div id="chatbot-messages"></div>
+        <div id="chatbot-input-area">
+            <input type="text" id="chatbot-input" placeholder="Ask me anything..." onkeypress="handleChatbotKey(event)">
+            <button id="chatbot-send" onclick="sendChatbotMessage()">Send</button>
+        </div>
+    </div>
+    
+    <script>
+       // @ts-nocheck
+       // eslint-disable
+
+       // Teacher Details Functions
+       function openTeacherDetails() {
+           const modal = document.getElementById('teacher-details-modal');
+           const overlay = document.getElementById('teacherDetailsOverlay');
+           modal.style.display = 'block';
+           overlay.classList.add('show');
+           
+           // Load teacher details if they exist
+           const teacherEmail = "{{ teacher_email }}";
+           fetch(`/get_teacher_details/${teacherEmail}`)
+               .then(res => res.json())
+               .then(data => {
+                   if (data.success) {
+                       document.getElementById('teacherName').value = data.name || '';
+                       document.getElementById('teacherPhone').value = data.phone || '';
+                       document.getElementById('teacherDepartment').value = data.department || '';
+                       document.getElementById('teacherSubject').value = data.subject || '';
+                   }
+               })
+               .catch(err => console.log("Error loading teacher details:", err));
+       }
+
+       function closeTeacherDetails() {
+           const modal = document.getElementById('teacher-details-modal');
+           const overlay = document.getElementById('teacherDetailsOverlay');
+           modal.style.display = 'none';
+           overlay.classList.remove('show');
+       }
+
+       // Handle teacher details form submission
+       document.addEventListener('DOMContentLoaded', function() {
+           const form = document.getElementById('teacherDetailsForm');
+           if (form) {
+               form.addEventListener('submit', function(e) {
+                   e.preventDefault();
+                   
+                   const teacherData = {
+                       email: document.getElementById('teacherEmail').value,
+                       name: document.getElementById('teacherName').value,
+                       phone: document.getElementById('teacherPhone').value,
+                       department: document.getElementById('teacherDepartment').value,
+                       subject: document.getElementById('teacherSubject').value
+                   };
+
+                   fetch('/save_teacher_details', {
+                       method: 'POST',
+                       headers: { 'Content-Type': 'application/json' },
+                       body: JSON.stringify(teacherData)
+                   })
+                   .then(res => res.json())
+                   .then(data => {
+                       if (data.success) {
+                           alert('Teacher details saved successfully!');
+                           document.getElementById('teacherNameDisplay').innerText = teacherData.name;
+                           closeTeacherDetails();
+                       } else {
+                           alert('Error saving teacher details');
+                       }
+                   })
+                   .catch(err => {
+                       console.error('Error:', err);
+                       alert('Error saving details');
+                   });
+               });
+           }
+       });
+
+       function showSection(section) {
+    document.querySelectorAll(".hidden-section").forEach(sec => {
+        sec.style.display = "none";
+    });
+
+    // Hide welcome
+    const welcomeSection = document.getElementById('welcome-section');
+    if (welcomeSection) {
+        welcomeSection.style.display = 'none';
+    }
+
+    const target = document.getElementById(section + "-section");
+
+    if (target) {
+        target.style.display = "block";
+    }
+}
+       
+       // Initialize page
+      window.addEventListener('load', function() {
+    // Show welcome ONLY at start
+    const welcomeSection = document.getElementById('welcome-section');
+    if (welcomeSection) {
+        welcomeSection.style.display = 'block';
+    }
+
+    initializeSemesterExam();
+    initializeQuiz();
+
+    // Do NOT call showSection here
+});
+       // Initialize semester exam section
+       function initializeSemesterExam() {
+           const container = document.getElementById('exam-subjects-container');
+           if (!container) {
+               console.error("exam-subjects-container not found in DOM!");
+               return;
+           }
+           
+           const subjects = ['MC', 'IOT', 'SPCC', 'AI'];
+           container.innerHTML = '';
+
+           subjects.forEach(subject => {
+               const subjectBox = document.createElement('div');
+               subjectBox.style.cssText = 'border: 2px solid #4A00E0; padding: 15px; border-radius: 8px; background: rgba(255,255,255,0.1); width: 200px; color: white;';
+               subjectBox.innerHTML = `
+                   <h3>${subject}</h3>
+                   <button onclick="showExamForm('${subject}')" style="width:100%; padding:8px; margin:5px 0; background:#4A00E0; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">Add Questions & Start</button>
+                   <button onclick="closeExam('${subject}')" style="width:100%; padding:8px; margin:5px 0; background:#f70a0a; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">Stop Exam</button>
+                   <p id="status-${subject}" style="margin:10px 0; font-size:12px; text-align:center;">Status: Inactive</p>
+               `;
+               container.appendChild(subjectBox);
+               
+               // Check current exam status and update display
+               fetch(`/check_exam/${subject}`)
+                   .then(res => res.json())
+                   .then(data => {
+                       const statusElement = document.getElementById(`status-${subject}`);
+                       if (statusElement && data.active) {
+                           statusElement.innerText = "Status: Active";
+                       }
+                   })
+                   .catch(err => console.log("Could not check exam status for " + subject + ":", err));
+           });
+           console.log("Semester exam section initialized with " + subjects.length + " subjects");
+       }
+
+       // Initialize quiz section
+       function initializeQuiz() {
+           const container = document.getElementById('quiz-subjects-container');
+           if (!container) {
+               console.error("quiz-subjects-container not found in DOM!");
+               return;
+           }
+           
+           const subjects = ['MC', 'IOT', 'SPCC', 'AI'];
+           container.innerHTML = '';
+
+           subjects.forEach(subject => {
+               const subjectBox = document.createElement('div');
+               subjectBox.style.cssText = 'border: 2px solid #4A00E0; padding: 15px; border-radius: 8px; background: rgba(255,255,255,0.1); width: 200px; color: white;';
+               subjectBox.innerHTML = `
+                   <h3>${subject}</h3>
+                   <button onclick="showQuizForm('${subject}')" style="width:100%; padding:8px; margin:5px 0; background:#4A00E0; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">Add Questions & Start</button>
+                   <button onclick="closeQuizTeacher('${subject}')" style="width:100%; padding:8px; margin:5px 0; background:#f70a0a; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">Stop Quiz</button>
+                   <p id="quiz-status-${subject}" style="margin:10px 0; font-size:12px; text-align:center;">Status: Inactive</p>
+               `;
+               container.appendChild(subjectBox);
+               
+               // Check current quiz status and update display
+               fetch(`/check_quiz/${subject}`)
+                   .then(res => res.json())
+                   .then(data => {
+                       const statusElement = document.getElementById(`quiz-status-${subject}`);
+                       if (statusElement && data.active) {
+                           statusElement.innerText = "Status: Active";
+                       }
+                   })
+                   .catch(err => console.log("Could not check quiz status for " + subject + ":", err));
+           });
+           console.log("Quiz section initialized with " + subjects.length + " subjects");
+       }
+       
+       // Wait for DOM to be fully loaded before initializing
+       if (document.readyState === 'loading') {
+           document.addEventListener('DOMContentLoaded', function() {
+               initializeSemesterExam();
+               initializeQuiz();
+           });
+       } else {
+           initializeSemesterExam();
+           initializeQuiz();
+       }
+
+       let teacherEmail = "{{ teacher_email }}";
+       let isAvailable = parseInt(document.getElementById("availability-section").getAttribute("data-availability")) || 0;
+
+       window.onload = function () {
+           updateUI();
+       };
+
+       function toggleAvailability() {
+           isAvailable = !isAvailable;
+           updateUI();
+
+           fetch("/update_availability", {
+               method: "POST",
+               headers: {"Content-Type": "application/json"},
+               body: JSON.stringify({
+                   teacher_email: teacherEmail,
+                   status: isAvailable ? 1 : 0
+               })
+           });
+       }
+
+function updateUI() {
+    let btn = document.getElementById("toggleBtn");
+    let text = document.getElementById("statusText");
+
+    if (isAvailable) {
+        btn.innerText = "ON";
+        btn.style.background = "green";
+        text.innerText = "Available";
+    } else {
+        btn.innerText = "OFF";
+        btn.style.background = "red";
+        text.innerText = "Not Available";
+    }
+}
+
+let selectedSubject = "";
+let questionsList = [];
+
+// Show form
+function showExamForm(subject) {
+    console.log("Opening exam form for subject:", subject);
+    
+    selectedSubject = subject;
+    questionsList = [];
+
+    // Hide all sections first
+    document.querySelectorAll(".hidden-section").forEach(sec => {
+        sec.style.display = "none";
+    });
+
+    // Show exam form section with explicit display
+    const formSection = document.getElementById("exam-form-section");
+    if (!formSection) {
+        console.error("exam-form-section not found!");
+        alert("Error: Exam form section not found");
+        return;
+    }
+    
+    // Show only the exam form section
+    formSection.style.display = "block";
+    formSection.style.visibility = "visible";
+    formSection.style.opacity = "1";
+    
+    console.log("Exam form section displayed");
+    console.log("Form section display:", window.getComputedStyle(formSection).display);
+
+    document.getElementById("selected-subject").innerText = subject + " Exam - Enter 10 Questions";
+
+    let container = document.getElementById("question-inputs");
+    container.innerHTML = "";
+
+    for (let i = 1; i <= 10; i++) {
+        container.innerHTML += `
+            <input type="text" id="q${i}" placeholder="Enter Question ${i}" style="width:100%; margin:5px 0; padding:8px; border:1px solid #ccc; border-radius:4px;"><br>
+        `;
+    }
+    container.innerHTML += `<br>
+        <button onclick="submitExamQuestions()" style="width:100%; padding:10px; margin-top:5px; background:#4A00E0; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold; font-size:14px;">Start Exam</button>
+        <button onclick="backToSemesterExam()" style="width:100%; padding:10px; margin-top:5px; background:#999; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold; font-size:14px;">Back</button>`;
+    
+    console.log("Exam form populated with 10 question inputs");
+}
+
+function backToSemesterExam() {
+    console.log("Going back to semester exam");
+    
+    // Hide all sections
+    document.querySelectorAll(".hidden-section").forEach(sec => {
+        sec.style.display = "none";
+    });
+    
+    // Show semester exam section
+    const semesterSection = document.getElementById("semester-exam-section");
+    if (semesterSection) {
+        semesterSection.style.display = "block";
+        semesterSection.style.visibility = "visible";
+        semesterSection.style.opacity = "1";
+    }
+    
+    initializeSemesterExam();
+    console.log("Back to semester exam displayed");
+}
+
+// Submit questions
+function submitExamQuestions() {
+    let questions = [];
+
+    for (let i = 1; i <= 10; i++) {
+        let q = document.getElementById(`q${i}`).value;
+        if (!q) {
+            alert("Please fill all 10 questions!");
+            return;
+        }
+        questions.push(q);
+    }
+
+    console.log("Submitting exam for:", selectedSubject);
+    console.log("Questions:", questions);
+
+    fetch("/start_exam", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            subject: selectedSubject,
+            questions: questions
+        })
+    })
+    .then(res => {
+        console.log("Response status:", res.status);
+        return res.json();
+    })
+    .then(data => {
+        console.log("Response data:", data);
+        if (data.success) {
+            alert("Exam Started Successfully for " + selectedSubject + "!");
+            
+            // Hide all sections
+            document.querySelectorAll(".hidden-section").forEach(sec => {
+                sec.style.display = "none";
+            });
+            
+            // Show semester exam section
+            const semesterSection = document.getElementById("semester-exam-section");
+            if (semesterSection) {
+                semesterSection.style.display = "block";
+                semesterSection.style.visibility = "visible";
+                semesterSection.style.opacity = "1";
+            }
+            
+            // Ensure exam subjects are reinitialized
+            setTimeout(() => {
+                initializeSemesterExam();
+            }, 200);
+        } else {
+            alert("Error: " + (data.error || "Failed to start exam"));
+        }
+    })
+    .catch(error => {
+        console.error("Fetch error:", error);
+        alert("Error submitting exam: " + error.message);
+    });
+}
+
+function closeExam(subject) {
+    if (!confirm(`Do you want to stop the ${subject} exam?`)) {
+        return;
+    }
+    
+    fetch(`/stop_exam/${subject}`, {
+        method: "POST"
+    })
+    .then(res => {
+        console.log("Stop exam response status:", res.status);
+        return res.json();
+    })
+    .then(data => {
+        console.log("Stop exam response:", data);
+        if (data.success) {
+            alert("Exam stopped successfully!");
+            const statusElement = document.getElementById(`status-${subject}`);
+            if (statusElement) {
+                statusElement.innerText = "Status: Inactive";
+            }
+        } else {
+            alert("Error: " + (data.error || "Failed to stop exam"));
+        }
+    })
+    .catch(error => {
+        console.error("Stop exam fetch error:", error);
+        alert("Error stopping exam: " + error.message);
+    });
+}
+
+// ============ QUIZ FUNCTIONS ============
+let selectedQuizSubject = "";
+let quizQuestionsList = [];
+
+// Show quiz form
+function showQuizForm(subject) {
+    console.log("Opening quiz form for subject:", subject);
+    
+    selectedQuizSubject = subject;
+    quizQuestionsList = [];
+
+    // Hide all sections first
+    document.querySelectorAll(".hidden-section").forEach(sec => {
+        sec.style.display = "none";
+    });
+
+    // Show quiz form section
+    const formSection = document.getElementById("quiz-form-section");
+    if (!formSection) {
+        console.error("quiz-form-section not found!");
+        alert("Error: Quiz form section not found");
+        return;
+    }
+    
+    formSection.style.display = "block";
+    formSection.style.visibility = "visible";
+    formSection.style.opacity = "1";
+    
+    document.getElementById("selected-quiz-subject").innerText = subject + " Quiz - Enter 2 Questions in MCQ Format";
+
+    let container = document.getElementById("quiz-question-inputs");
+    container.innerHTML = "";
+
+    // Add 2 MCQ questions
+    for (let i = 1; i <= 2; i++) {
+        container.innerHTML += `
+            <div style="background: rgba(255,255,255,0.1); padding: 15px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #4A00E0;">
+                <h4 style="color: white;">Question ${i}</h4>
+                <input type="text" id="q${i}-text" placeholder="Enter Question ${i}" style="width:100%; margin:5px 0; padding:8px; border:1px solid #ccc; border-radius:4px;"><br>
+                
+                <h5 style="color: white; margin-top: 10px;">Options:</h5>
+                <input type="text" id="q${i}-a" placeholder="Option A" style="width:100%; margin:5px 0; padding:8px; border:1px solid #ccc; border-radius:4px;"><br>
+                <input type="text" id="q${i}-b" placeholder="Option B" style="width:100%; margin:5px 0; padding:8px; border:1px solid #ccc; border-radius:4px;"><br>
+                <input type="text" id="q${i}-c" placeholder="Option C" style="width:100%; margin:5px 0; padding:8px; border:1px solid #ccc; border-radius:4px;"><br>
+                <input type="text" id="q${i}-d" placeholder="Option D" style="width:100%; margin:5px 0; padding:8px; border:1px solid #ccc; border-radius:4px;"><br>
+                
+                <label style="color: white; margin-top: 10px; display: block;">Correct Answer:</label>
+                <select id="q${i}-correct" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; margin-top: 5px;">
+                    <option value="">-- Select Correct Answer --</option>
+                    <option value="A">Option A</option>
+                    <option value="B">Option B</option>
+                    <option value="C">Option C</option>
+                    <option value="D">Option D</option>
+                </select>
+            </div>
+        `;
+    }
+
+    container.innerHTML += `<br>
+        <button onclick="submitQuizQuestions()" style="width:100%; padding:10px; margin-top:5px; background:#4A00E0; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold; font-size:14px;">Start Quiz</button>
+        <button onclick="backToQuizSection()" style="width:100%; padding:10px; margin-top:5px; background:#999; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold; font-size:14px;">Back</button>`;
+    
+    console.log("Quiz form populated with 2 MCQ question inputs");
+}
+
+function backToQuizSection() {
+    console.log("Going back to quiz section");
+    
+    // Hide all sections
+    document.querySelectorAll(".hidden-section").forEach(sec => {
+        sec.style.display = "none";
+    });
+    
+    // Show quiz section
+    const quizSection = document.getElementById("quiz-section");
+    if (quizSection) {
+        quizSection.style.display = "block";
+        quizSection.style.visibility = "visible";
+        quizSection.style.opacity = "1";
+    }
+    
+    initializeQuiz();
+    console.log("Back to quiz section displayed");
+}
+
+// Submit quiz questions
+function submitQuizQuestions() {
+    let questions = [];
+
+    for (let i = 1; i <= 2; i++) {
+        let questionText = document.getElementById(`q${i}-text`).value;
+        let optionA = document.getElementById(`q${i}-a`).value;
+        let optionB = document.getElementById(`q${i}-b`).value;
+        let optionC = document.getElementById(`q${i}-c`).value;
+        let optionD = document.getElementById(`q${i}-d`).value;
+        let correct = document.getElementById(`q${i}-correct`).value;
+
+        if (!questionText || !optionA || !optionB || !optionC || !optionD || !correct) {
+            alert(`Please fill all fields for Question ${i}!`);
+            return;
+        }
+
+        questions.push({
+            question: questionText,
+            options: [optionA, optionB, optionC, optionD],
+            correct: correct
+        });
+    }
+
+    console.log("Submitting quiz for:", selectedQuizSubject);
+    console.log("Questions:", questions);
+
+    fetch("/start_quiz", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            subject: selectedQuizSubject,
+            questions: questions
+        })
+    })
+    .then(res => {
+        console.log("Response status:", res.status);
+        return res.json();
+    })
+    .then(data => {
+        console.log("Response data:", data);
+        if (data.success) {
+            alert("Quiz Started Successfully for " + selectedQuizSubject + "!");
+            
+            // Hide all sections
+            document.querySelectorAll(".hidden-section").forEach(sec => {
+                sec.style.display = "none";
+            });
+            
+            // Show quiz section
+            const quizSection = document.getElementById("quiz-section");
+            if (quizSection) {
+                quizSection.style.display = "block";
+                quizSection.style.visibility = "visible";
+                quizSection.style.opacity = "1";
+            }
+            
+            // Reinitialize quiz
+            setTimeout(() => {
+                initializeQuiz();
+            }, 200);
+        } else {
+            alert("Error: " + (data.error || "Failed to start quiz"));
+        }
+    })
+    .catch(error => {
+        console.error("Fetch error:", error);
+        alert("Error submitting quiz: " + error.message);
+    });
+}
+
+function closeQuizTeacher(subject) {
+    if (!confirm(`Do you want to stop the ${subject} quiz?`)) {
+        return;
+    }
+    
+    fetch(`/stop_quiz/${subject}`, {
+        method: "POST"
+    })
+    .then(res => {
+        console.log("Stop quiz response status:", res.status);
+        return res.json();
+    })
+    .then(data => {
+        console.log("Stop quiz response:", data);
+        if (data.success) {
+            alert("Quiz stopped successfully!");
+            const statusElement = document.getElementById(`quiz-status-${subject}`);
+            if (statusElement) {
+                statusElement.innerText = "Status: Inactive";
+            }
+        } else {
+            alert("Error: " + (data.error || "Failed to stop quiz"));
+        }
+    })
+    .catch(error => {
+        console.error("Stop quiz fetch error:", error);
+        alert("Error stopping quiz: " + error.message);
+    });
+}
+
+// Logout button functionality
+document.addEventListener("DOMContentLoaded", function() {
+    const logoutBtn = document.querySelector(".logout-btn:not(#password-btn)");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", function() {
+            window.location.href = "/logout";
+        });
+    }
+});
+ 
+document.getElementById("attendanceDate").valueAsDate = new Date();
+
+document.getElementById("attendanceDate").addEventListener("change", loadAttendance);
+
+function loadAttendance() {
+    let date = document.getElementById("attendanceDate").value;
+
+    fetch(`/get_attendance?date=${date}`)
+    .then(res => res.json())
+    .then(data => {
+        for (let email in data) {
+            let dropdown = document.getElementById("status-" + email);
+            if (dropdown) {
+                dropdown.value = data[email];
+            }
+        }
+    });
+}
+
+function saveAttendance() {
+    let date = document.getElementById("attendanceDate").value;
+    let subject = document.getElementById("attendanceSubject").value;
+
+    if (!subject) {
+        alert("Please select a subject!");
+        return;
+    }
+
+    if (!date) {
+        alert("Please select a date!");
+        return;
+    }
+
+    let attendanceData = {};
+
+    // Dynamically collect attendance data from all status dropdowns
+    document.querySelectorAll('[id^="status-"]').forEach(dropdown => {
+        let email = dropdown.id.replace("status-", "");
+        attendanceData[email] = dropdown.value;
+    });
+
+    if (Object.keys(attendanceData).length === 0) {
+        alert("No students found! Please load students first.");
+        return;
+    }
+
+    fetch("/save_attendance", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            date: date,
+            attendance: attendanceData,
+            teacher_email: teacherEmail,
+            subject: subject
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert("Attendance Saved for " + subject + "!");
+        } else {
+            alert("Error saving attendance: " + (data.error || "Unknown error"));
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("Error saving attendance: " + error.message);
+    });
+}
+
+// ============ CHATBOT FUNCTIONALITY ============
+const chatbotKnowledgeBase = {
+    "add result": "Add Result button allows you to enter student marks for different subjects. You need to provide: Student Email, Subject Name, and Marks (0-100).",
+    "student results": "Student Results shows all the exam marks submitted by teachers for students. It displays the latest marks for each student per subject.",
+    "quiz scores": "Quiz Scores displays all quiz attempts by students with their scores out of 100. You can track student performance in quizzes here.",
+    "add student": "Add Student Details allows you to register new students. Required info: Name, Email, Roll No, Course, Division, and Fees amount.",
+    "student details": "Student Details displays information of all registered students in a table format including their email, name, roll number, course, division, and fees status.",
+    "teacher availability": "Teacher Availability allows you to toggle your availability status to ON or OFF. When ON, students can see you're available for guidance.",
+    "semester exam": "Semester Exam allows you to create and manage semester exams for different subjects (MC, IOT, SPCC, AI). You can activate exams by entering 10 questions.",
+    "attendance": "Attendance lets you mark student attendance for a specific date. Select date, mark Present/Absent for each student, and save the record.",
+    "exam criteria": "Exam Criteria: A valid semester exam requires 10 questions per subject. Once activated, students must maintain full screen mode and camera must be on. Exiting full screen will auto-submit the exam.",
+    "attendance criteria": "Attendance Criteria: Mark students as Present or Absent for each date. You can modify records by selecting different dates and updating the status for each student.",
+    "quiz guidelines": "Quiz Guidelines: Students must take quizzes in full screen mode. They should score at least 40/100 to pass. Each subject can have only one quiz attempt. Exiting full screen will auto-submit.",
+    "dashboard buttons": "Main Buttons: Add Result (enter marks), Student Results (view marks), Quiz Scores (view quiz performance), Add Student (register new student), Student Details (view all students), Teacher Availability (set status), Semester Exam (manage exams), Attendance (mark attendance).",
+    "help": "I can help you understand: Dashboard features, How to add results, How to manage exams, How to mark attendance, What each button does, Exam/attendance criteria, Quiz guidelines. Just ask!",
+    "hi": "Hello! I'm your Teacher Guide Assistant. I can help you understand the dashboard features, exam management, attendance, and more. What would you like to know?",
+    "hello": "Hello! I'm your Teacher Guide Assistant. I can help you understand the dashboard features, exam management, attendance, and more. What would you like to know?"
+};
+
+function toggleChatbot() {
+    const container = document.getElementById('chatbot-container');
+    const toggle = document.getElementById('chatbot-toggle');
+    
+    if (container.style.display === 'none') {
+        container.style.display = 'flex';
+        if (document.getElementById('chatbot-messages').children.length === 0) {
+            addBotMessage("Hello! 👋 I'm your Teacher Guide Assistant. I can help you with dashboard features, exam management, attendance, and more. What would you like to know?");
+        }
+    } else {
+        container.style.display = 'none';
+    }
+}
+
+function addBotMessage(message) {
+    const messagesDiv = document.getElementById('chatbot-messages');
+    const msgEl = document.createElement('div');
+    msgEl.className = 'chatbot-message bot-message';
+    msgEl.textContent = message;
+    messagesDiv.appendChild(msgEl);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+function addUserMessage(message) {
+    const messagesDiv = document.getElementById('chatbot-messages');
+    const msgEl = document.createElement('div');
+    msgEl.className = 'chatbot-message user-message';
+    msgEl.textContent = message;
+    messagesDiv.appendChild(msgEl);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// Other words users type for each topic of the knowledge base.
+const chatbotSynonyms = {
+    "add result": [
+        "enter marks",
+        "add marks",
+        "upload marks",
+        "give marks"
+    ],
+    "student results": [
+        "results",
+        "iat marks",
+        "iat results",
+        "marks list",
+        "view marks"
+    ],
+    "quiz scores": [
+        "quiz marks",
+        "quiz result",
+        "quiz performance",
+        "mcq score"
+    ],
+    "add student": [
+        "register student",
+        "new student",
+        "enrol",
+        "enroll"
+    ],
+    "student details": [
+        "student list",
+        "student information",
+        "roll number",
+        "roll no",
+        "division"
+    ],
+    "teacher availability": [
+        "availability",
+        "available",
+        "my status",
+        "busy",
+        "free"
+    ],
+    "semester exam": [
+        "exam",
+        "iat",
+        "internal test",
+        "written test",
+        "create exam",
+        "question paper",
+        "set paper"
+    ],
+    "attendance": [
+        "mark attendance",
+        "present",
+        "absent",
+        "lecture",
+        "roll call"
+    ],
+    "exam criteria": [
+        "exam rules",
+        "exam requirements",
+        "how many questions"
+    ],
+    "attendance criteria": [
+        "attendance rules",
+        "change attendance",
+        "edit attendance",
+        "update attendance",
+        "modify attendance"
+    ],
+    "quiz guidelines": [
+        "quiz rules",
+        "quiz criteria",
+        "quiz instructions"
+    ],
+    "dashboard buttons": [
+        "buttons",
+        "menu",
+        "options",
+        "sections",
+        "features",
+        "home page"
+    ],
+    "help": [
+        "what can you do",
+        "how to use",
+        "guide",
+        "support"
+    ]
+};
+
+// Lower case, punctuation removed, plural "s" dropped, single spaces.
+function normalizeChatText(text) {
+    return text.toLowerCase()
+        .replace(/[^a-z0-9\s]/g, " ")
+        .split(/\s+/)
+        .filter(word => word.length > 0)
+        .map(word => (word.length > 3 && word.endsWith("s") && !word.endsWith("ss")) ? word.slice(0, -1) : word)
+        .join(" ");
+}
+
+// Number of single-letter edits (insert, delete, replace, swap of two
+// neighbouring letters) needed to turn one string into the other.
+function editDistance(a, b) {
+    const d = [];
+    for (let i = 0; i <= a.length; i++) {
+        d.push([i]);
+        for (let j = 1; j <= b.length; j++) {
+            if (i === 0) { d[0].push(j); continue; }
+            const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+            let value = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+            if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+                value = Math.min(value, d[i - 2][j - 2] + 1);
+            }
+            d[i].push(value);
+        }
+    }
+    return d[a.length][b.length];
+}
+
+// Every phrase the assistant knows: the key of each answer and its synonyms.
+function chatbotPhrases() {
+    const phrases = [];
+    for (let key in chatbotKnowledgeBase) {
+        phrases.push({ text: normalizeChatText(key), key: key, isKey: true });
+        (chatbotSynonyms[key] || []).forEach(word => {
+            phrases.push({ text: normalizeChatText(word), key: key, isKey: false });
+        });
+    }
+    return phrases;
+}
+
+function findAnswer(userInput) {
+    const fallback = "I'm not sure about that. Try asking about: Add Result, Student Results, Quiz Scores, Add Student, Student Details, Teacher Availability, Semester Exam, Attendance, Exam Criteria, Attendance Criteria, or Dashboard Buttons.";
+    const input = normalizeChatText(userInput);
+    if (input === "") return fallback;
+
+    const phrases = chatbotPhrases();
+    const padded = " " + input + " ";
+
+    // 1. Longest known phrase that appears in the question as whole words.
+    //    A key wins over a synonym of the same length.
+    let best = null;
+    phrases.forEach(p => {
+        if (padded.includes(" " + p.text + " ")) {
+            if (best === null || p.text.length > best.text.length ||
+                (p.text.length === best.text.length && p.isKey && !best.isKey)) {
+                best = p;
+            }
+        }
+    });
+    if (best) return chatbotKnowledgeBase[best.key];
+
+    // 2. A short question that is part of a key, for example "exam".
+    if (input.length >= 3) {
+        const part = phrases.find(p => p.isKey && (" " + p.text + " ").includes(padded));
+        if (part) return chatbotKnowledgeBase[part.key];
+    }
+
+    // 3. Spelling mistakes: compare each phrase with every run of the same
+    //    number of words in the question and accept a small edit distance.
+    const words = input.split(" ");
+    let closest = null;
+    phrases.forEach(p => {
+        if (p.text.length < (p.isKey ? 4 : 5)) return;
+        const size = p.text.split(" ").length;
+        const allowed = p.text.length <= 6 ? 1 : (p.text.length <= 12 ? 2 : 3);
+        for (let start = 0; start + size <= words.length; start++) {
+            const piece = words.slice(start, start + size).join(" ");
+            const distance = editDistance(piece, p.text);
+            if (distance <= allowed) {
+                const closeness = 1 - distance / p.text.length;
+                if (closest === null || closeness > closest.closeness ||
+                    (closeness === closest.closeness && p.text.length > closest.text.length)) {
+                    closest = { key: p.key, text: p.text, closeness: closeness };
+                }
+            }
+        }
+    });
+    if (closest) return chatbotKnowledgeBase[closest.key];
+
+    // 4. Nothing matched.
+    return fallback;
+}
+
+function sendChatbotMessage() {
+    const input = document.getElementById('chatbot-input');
+    const message = input.value.trim();
+    
+    if (message === '') return;
+    
+    addUserMessage(message);
+    const answer = findAnswer(message);
+    setTimeout(() => {
+        addBotMessage(answer);
+    }, 300);
+    
+    input.value = '';
+}
+
+function handleChatbotKey(event) {
+    if (event.key === 'Enter') {
+        sendChatbotMessage();
+    }
+}
+
+function updateMarks(id, marks) {
+    fetch('/update_marks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: id, marks: marks })
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log("Marks updated");
+    });
+}
+
+// ============ ASSIGNMENTS FUNCTIONALITY (TEACHER) ============
+function loadAssignmentSubjects() {
+    const teacherEmail = "{{ teacher_email }}";
+    fetch(`/get_teacher_subjects/${teacherEmail}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.subjects.length > 0) {
+                const container = document.getElementById('assignment-subject-buttons');
+                container.innerHTML = '';
+                
+                data.subjects.forEach(subject => {
+                    const btn = document.createElement('button');
+                    btn.style.cssText = 'padding: 10px 20px; background: #4A00E0; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;';
+                    btn.textContent = subject;
+                    btn.onclick = () => selectAssignmentSubject(subject);
+                    container.appendChild(btn);
+                });
+                
+                document.getElementById('assignment-no-subject').style.display = 'block';
+                document.getElementById('assignment-upload-container').style.display = 'none';
+            }
+        })
+        .catch(err => console.log("Error loading subjects:", err));
+}
+
+function selectAssignmentSubject(subject) {
+    document.getElementById('assignment-subject-title').textContent = `Upload Assignment for ${subject}`;
+    window.currentAssignmentSubject = subject;
+    document.getElementById('assignment-no-subject').style.display = 'none';
+    document.getElementById('assignment-upload-container').style.display = 'block';
+}
+
+function uploadAssignment() {
+    const title = document.getElementById('assignment-title').value;
+    const description = document.getElementById('assignment-description').value;
+    const deadline = document.getElementById('assignment-deadline').value;
+    
+    if (!title || !description || !deadline || !window.currentAssignmentSubject) {
+        alert('Please fill in all fields');
+        return;
+    }
+    
+    fetch('/upload_assignment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            teacher_email: "{{ teacher_email }}",
+            subject: window.currentAssignmentSubject,
+            title: title,
+            description: description,
+            deadline: deadline
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert('Assignment uploaded successfully!');
+            document.getElementById('assignment-title').value = '';
+            document.getElementById('assignment-description').value = '';
+            document.getElementById('assignment-deadline').value = '';
+        } else {
+            alert('Error uploading assignment: ' + data.message);
+        }
+    })
+    .catch(err => alert('Error: ' + err));
+}
+
+// ============ STUDY MATERIALS FUNCTIONALITY (TEACHER) ============
+function loadStudyMaterialSubjects() {
+    const teacherEmail = "{{ teacher_email }}";
+    fetch(`/get_teacher_subjects/${teacherEmail}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.subjects.length > 0) {
+                const container = document.getElementById('material-subject-buttons');
+                container.innerHTML = '';
+                
+                data.subjects.forEach(subject => {
+                    const btn = document.createElement('button');
+                    btn.style.cssText = 'padding: 10px 20px; background: #4A00E0; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;';
+                    btn.textContent = subject;
+                    btn.onclick = () => selectMaterialSubject(subject);
+                    container.appendChild(btn);
+                });
+                
+                document.getElementById('material-no-subject').style.display = 'block';
+                document.getElementById('material-upload-container').style.display = 'none';
+            }
+        })
+        .catch(err => console.log("Error loading subjects:", err));
+}
+
+function selectMaterialSubject(subject) {
+    document.getElementById('material-subject-title').textContent = `Upload Study Material for ${subject}`;
+    window.currentMaterialSubject = subject;
+    document.getElementById('material-no-subject').style.display = 'none';
+    document.getElementById('material-upload-container').style.display = 'block';
+}
+
+document.getElementById('material-file-input')?.addEventListener('change', function() {
+    const fileName = this.files[0]?.name || '';
+    document.getElementById('material-file-name').textContent = fileName ? `Selected: ${fileName}` : '';
+});
+
+function uploadMaterial() {
+    const title = document.getElementById('material-title').value;
+    const type = document.getElementById('material-type').value;
+    const file = document.getElementById('material-file-input').files[0];
+    
+    if (!title || !file || !window.currentMaterialSubject) {
+        alert('Please fill in all fields');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('teacher_email', "{{ teacher_email }}");
+    formData.append('subject', window.currentMaterialSubject);
+    formData.append('title', title);
+    formData.append('file_type', type);
+    formData.append('file', file);
+    
+    fetch('/upload_material', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert('Material uploaded successfully!');
+            document.getElementById('material-title').value = '';
+            document.getElementById('material-file-input').value = '';
+            document.getElementById('material-file-name').textContent = '';
+        } else {
+            alert('Error uploading material: ' + data.message);
+        }
+    })
+    .catch(err => alert('Error: ' + err));
+}
+
+// ============ LEAVE REQUEST FUNCTIONALITY (TEACHER) ============
+function loadLeaveRequests() {
+    const teacherEmail = "{{ teacher_email }}";
+    fetch(`/get_teacher_leave_requests/${teacherEmail}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.requests.length > 0) {
+                displayLeaveRequests(data.requests);
+            }
+        })
+        .catch(err => console.log("Error loading leave requests:", err));
+}
+
+function submitLeaveRequest() {
+    const leaveType = document.getElementById('leave-type').value;
+    const fromDate = document.getElementById('leave-from-date').value;
+    const toDate = document.getElementById('leave-to-date').value;
+    const reason = document.getElementById('leave-reason').value;
+    
+    if (!leaveType || !fromDate || !toDate || !reason) {
+        alert('Please fill in all fields');
+        return;
+    }
+    
+    if (new Date(fromDate) > new Date(toDate)) {
+        alert('From date must be before To date');
+        return;
+    }
+    
+    fetch('/submit_leave_request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            teacher_email: "{{ teacher_email }}",
+            leave_type: leaveType,
+            from_date: fromDate,
+            to_date: toDate,
+            reason: reason
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert('Leave request submitted successfully!');
+            document.getElementById('leave-type').value = '';
+            document.getElementById('leave-from-date').value = '';
+            document.getElementById('leave-to-date').value = '';
+            document.getElementById('leave-reason').value = '';
+            loadLeaveRequests();
+        } else {
+            alert('Error submitting leave request: ' + data.message);
+        }
+    })
+    .catch(err => alert('Error: ' + err));
+}
+
+function displayLeaveRequests(requests) {
+    const tbody = document.getElementById('leave-requests-table-body');
+    tbody.innerHTML = '';
+    
+    requests.forEach(request => {
+        const row = document.createElement('tr');
+        const statusColor = request.status === 'Pending' ? '#ff9800' : (request.status === 'Approved' ? '#43a047' : '#f44336');
+        row.innerHTML = `
+            <td style="padding: 12px; border: 1px solid #ddd;">${request.leave_type}</td>
+            <td style="padding: 12px; border: 1px solid #ddd;">${request.from_date}</td>
+            <td style="padding: 12px; border: 1px solid #ddd;">${request.to_date}</td>
+            <td style="padding: 12px; border: 1px solid #ddd;"><span style="padding: 5px 10px; background: ${statusColor}; color: white; border-radius: 3px;">${request.status}</span></td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+// Override showSection to handle new sections
+const originalShowSectionTeacher = window.showSection;
+window.showSection = function(sectionId) {
+    originalShowSectionTeacher(sectionId);
+    if (sectionId === 'assignments') {
+        loadAssignmentSubjects();
+    }
+    if (sectionId === 'study-materials') {
+        loadStudyMaterialSubjects();
+    }
+    if (sectionId === 'leave-request') {
+        loadLeaveRequests();
+    }
+};
+
+
+    </script>
+
+</body>
+</html>

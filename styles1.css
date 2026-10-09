@@ -1,0 +1,87 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Background Styling */
+body {
+    background: url("../static/m1.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    color: white;
+}
+
+/* Navbar Styling */
+nav {
+    width: 100%;
+    background: #4A00E0;
+    padding: 15px 20px;
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+/* Dashboard Layout */
+.dashboard-container {
+    display: flex;
+    width: 100%;
+    height: calc(100vh - 60px);
+    align-items: center;
+    justify-content: center;
+}
+
+/* Content Section */
+#content-section {
+    background: white;
+    padding: 3rem;
+    border-radius: 15px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 100%;
+    max-width: 450px;
+    color: black;
+}
+
+/* Input Fields */
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 2px solid #4A00E0;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+/* Login Button */
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    background: linear-gradient(135deg, #4A00E0, #8E2DE2);
+    color: white;
+}
+
+.login-btn:hover {
+    background: linear-gradient(135deg, #ff4081, #ff7eb3);
+}
+
+/* Error Message */
+#error {
+    color: red;
+    font-size: 1rem;
+    margin-top: 10px;
+}

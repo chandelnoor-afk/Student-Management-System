@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Student Result Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles1.css') }}">
+    <style>
+    </style>
+</head>
+<body>    
+
+    <!-- Navigation Bar -->
+    <nav>
+        <span>Student Management System</span>
+    </nav>
+
+    <!-- Login Page Layout -->
+    <div class="dashboard-container">
+        <!-- Centered Content -->
+        <div id="content-section">
+            <div class="hidden-section" style="display: block;">
+                <h2>Login</h2>
+                <input type="email" id="email" placeholder="Enter your email" autocomplete="username">
+                <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" onkeydown="if (event.key === 'Enter') login()">
+                <button class="login-btn" onclick="login()">Login</button>
+                <p id="error"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function login() {
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+            fetch("/login", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({email: email, password: password})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = data.redirect;
+                } else {
+                    document.getElementById("error").innerText = data.error || "Login failed";
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change password - Student Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles1.css') }}">
+</head>
+<body>
+    <nav>
+        <span>Student Management System</span>
+    </nav>
+    <div class="dashboard-container">
+        <div id="content-section">
+            <div class="hidden-section" style="display: block;">
+                <h2>Change password</h2>
+                <p>{{ email }}</p>
+                <input type="password" id="old" placeholder="Current password" autocomplete="current-password">
+                <input type="password" id="new" placeholder="New password (at least 8 characters)" autocomplete="new-password">
+                <input type="password" id="again" placeholder="Repeat the new password" autocomplete="new-password">
+                <button class="login-btn" onclick="changePassword()">Save password</button>
+                <p id="error"></p>
+                <p><a href="{{ back }}">Back to dashboard</a></p>
+            </div>
+        </div>
+    </div>
+    <script>
+        function changePassword() {
+            const oldPassword = document.getElementById("old").value;
+            const newPassword = document.getElementById("new").value;
+            const message = document.getElementById("error");
+            if (newPassword !== document.getElementById("again").value) {
+                message.innerText = "The two new passwords are not the same";
+                return;
+            }
+            fetch("/change_password", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({old_password: oldPassword, new_password: newPassword})
+            })
+            .then(response => response.json())
+            .then(data => {
+                message.innerText = data.success ? "Password changed" : (data.error || "Could not change the password");
+            });
+        }
+    </script>
+</body>
+</html>

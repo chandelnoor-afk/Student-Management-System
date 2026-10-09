@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+    <style>
+        background: url("{{ url_for('static', filename='bg.jpg') }}");
+      
+        
+   /* Background */
+body {
+    font-family: Arial;
+    margin: 0;
+    background: linear-gradient(135deg, #4A00E0, #7928CA);
+    color: white;
+
+    
+}
+
+/* Navbar */
+nav {
+    background: linear-gradient(90deg, #4A00E0, #7928CA);
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: 220px;
+    height: 100%;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+}
+
+.sidebar button {
+    width: 100%;
+    margin: 10px 0;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #6a11cb);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.sidebar button:hover {
+    transform: scale(1.05);
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 240px;
+    padding: 40px;
+}
+
+/* Glass Card */
+.card-container {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(12px);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 0 25px rgba(255,255,255,0.3);
+}
+
+/* Section */
+.section {
+    display: none;
+}
+
+/* Headings */
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Inputs */
+input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    margin-bottom: 10px;
+}
+
+input::placeholder {
+    color: #555;
+    font-weight: bold;
+}
+
+/* Buttons */
+.submit-btn {
+    width: 100%;
+    padding: 10px;
+    background: #4A00E0;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background: #3300c3;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    color: black;
+}
+
+th {
+    background: linear-gradient(90deg, #4A00E0, #7928CA);
+    color: white;
+    padding: 12px;
+}
+
+td {
+    padding: 10px;
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background: #f5f5f5;
+}
+
+tr:hover {
+    background: #eee;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 150px;
+    }
+
+    .main-content {
+        margin-left: 160px;
+    }
+}
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <span>Admin Dashboard</span>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+</nav>
+
+<div class="sidebar">
+    <button onclick="showSection('add-student')">Add Student</button>
+    <button onclick="showSection('view-student')">Student Details</button>
+    <button onclick="showSection('add-teacher')">Add Teacher</button>
+    <button onclick="showSection('view-teacher')">Teacher Details</button>
+    <button onclick="showSection('quiz-marks')">Quiz Marks</button>
+    <button onclick="showSection('exam-marks')">Exam Marks</button>
+    <button onclick="showSection('set-password')">Set Password</button>
+    <button onclick="window.location.href='/account'">My Password</button>
+   
+</div>
+
+
+<div class="main-content">
+    {% if message %}<p style="text-align:center; font-weight:bold; margin-bottom:10px;">{{ message }}</p>{% endif %}
+    <div class="card-container">    
+
+    <!-- Set Password -->
+    <div id="set-password" class="section">
+        <h2>Set Password</h2>
+        <p>Give a registered student or teacher a login password, or replace a forgotten one.</p>
+        <form action="/admin_set_password" method="post">
+            <input type="email" name="email" placeholder="Student or teacher e-mail" required><br>
+            <input type="password" name="password" placeholder="New password (at least 8 characters)" minlength="8" required autocomplete="new-password"><br>
+            <button class="submit-btn">Save Password</button>
+        </form>
+        {% if no_password %}
+        <p style="margin-top: 15px;"><b>These accounts have no password yet and cannot log in:</b></p>
+        <ul style="list-style: none;">
+            {% for e in no_password %}<li>{{ e }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+
+    <!-- Add Student -->
+    <div id="add-student" class="section">
+        <h2>Add Student</h2>
+        <form action="/admin_add_student" method="post">
+            <input type="text" name="name" placeholder="Name" required><br>
+            <input type="email" name="email" placeholder="Email" required><br>
+            <input type="text" name="roll" placeholder="Roll No" required><br>
+            <input type="text" name="course" placeholder="Course" required><br>
+            <input type="text" name="division" placeholder="Division" required><br>
+            <input type="text" name="fees" placeholder="Fees" required><br>
+            <input type="password" name="password" placeholder="Login password (at least 8 characters)" minlength="8" autocomplete="new-password"><br>
+
+            <button class="submit-btn">Add Student</button>
+        </form>
+    </div>
+
+    <!-- View Students -->
+    <div id="view-student" class="section">
+        <h2>Student Details</h2>
+        
+        <table>
+            <tr>
+    <th>Email</th>
+    <th>Name</th>
+    <th>Roll</th>
+    <th>Course</th>
+    <th>Division</th>
+    <th>Fees</th>
+    <th>Action</th>
+</tr>
+
+{% for s in students %}
+<tr>
+    <td>{{ s[0] }}</td>
+    <td>{{ s[1] }}</td>
+    <td>{{ s[2] }}</td>
+    <td>{{ s[3] }}</td>
+    <td>{{ s[4] }}</td>
+    <td>{{ s[5] }}</td>
+    <td>
+        <button onclick="deleteStudent('{{ s[0] }}')">Delete</button>
+    </td>
+</tr>
+{% endfor %}
+        </table>
+    </div>
+
+    <!-- Add Teacher -->
+    <div id="add-teacher" class="section">
+        <h2>Add Teacher</h2>
+        <form action="/admin_add_teacher" method="post">
+            <input type="text" name="name" placeholder="Name" required><br>
+            <input type="email" name="email" placeholder="Email" required><br>
+            <input type="text" name="department" placeholder="Department" required><br>
+            <input type="text" name="subject" placeholder="Subject" required><br>
+            <input type="password" name="password" placeholder="Login password (at least 8 characters)" minlength="8" autocomplete="new-password"><br>
+            <button class="submit-btn">Add Teacher</button>
+        </form>
+    </div>
+
+    <!-- View Teachers -->
+    <div id="view-teacher" class="section">
+        <h2>Teacher Details</h2>
+        <table>
+            <tr>
+    <th>Email</th>
+    <th>Name</th>
+    <th>Department</th>
+    <th>Subject</th>
+    <th>Action</th>
+</tr>
+
+{% for t in teachers %}
+<tr>
+    <td>{{ t[0] }}</td>
+    <td>{{ t[1] }}</td>
+    <td>{{ t[2] }}</td>
+    <td>{{ t[3] }}</td>
+    <td>
+        <button onclick="deleteTeacher('{{ t[0] }}')">Delete</button>
+    </td>
+</tr>
+{% endfor %}
+        </table>
+    </div>
+
+    <!-- Quiz Marks -->
+    <div id="quiz-marks" class="section">
+        <h2>Quiz Marks</h2>
+        <table>
+            <tr>
+    <th>Email</th>
+    <th>Subject</th>
+    <th>Score</th>
+    <th>Action</th>
+</tr>
+
+{% for q in quiz %}
+<tr>
+    <td>{{ q[1] }}</td>
+    <td>{{ q[2] }}</td>
+    <td>{{ q[3] }}</td>
+    <td>
+        <button onclick="deleteQuiz({{ q[0] }})">Delete</button>
+    </td>
+</tr>
+{% endfor %}
+
+            
+        </table>
+    </div>
+
+    <!-- Exam Marks -->
+    <div id="exam-marks" class="section">
+        <h2>Exam Marks</h2>
+        <table>
+           <tr>
+    <th>Email</th>
+    <th>Subject</th>
+    <th>Marks</th>
+    <th>Action</th>
+</tr>
+
+{% for e in exams %}
+<tr>
+    <td>{{ e[1] }}</td>
+    <td>{{ e[2] }}</td>
+    <td>{{ e[3] }}</td>
+    <td>
+        <button onclick="deleteExam({{ e[0] }})">Delete</button>
+    </td>
+</tr>
+{% endfor %}
+        </table>
+    </div>
+
+    </div>
+<script>
+function showSection(id) {
+    document.querySelectorAll(".section").forEach(sec => sec.style.display = "none");
+    document.getElementById(id).style.display = "block";
+}
+
+function logout() {
+    window.location.href = "/logout";
+}
+
+function deleteQuiz(id) {
+    if (!confirm("Delete this quiz record?")) return;
+
+    fetch(`/delete_quiz/${id}`, {
+        method: "POST"
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert("Deleted successfully");
+            location.reload();
+        }
+    });
+}
+
+function deleteExam(id) {
+    if (!confirm("Delete this exam record?")) return;
+
+    fetch(`/delete_exam/${id}`, {
+        method: "POST"
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert("Deleted successfully");
+            location.reload();
+        }
+    });
+}
+
+function deleteStudent(email) {
+    if (!confirm("Delete this student?")) return;
+
+    fetch(`/delete_student/${email}`, {
+        method: "POST"
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert("Student deleted");
+            location.reload();
+        }
+    });
+}
+
+function deleteTeacher(email) {
+    if (!confirm("Delete this teacher?")) return;
+
+    fetch(`/delete_teacher/${email}`, {
+        method: "POST"
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert("Teacher deleted");
+            location.reload();
+        }
+    });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .quiz-option {
+            display: block;
+            padding: 10px;
+            margin: 5px 0;
+            border: 2px solid #007bff;
+            background-color: white;
+            color: #007bff;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+            transition: 0.3s;
+        }
+        #submitBtn{
+            color:white;
+            background-color: #0c62ed;
+            padding:10px;
+            height:30px;
+            width:80px;
+            font-weight:bold;
+            font-family: Arial;
+            font-size: 10px;
+
+        }
+        #color{
+            color: white;
+        }
+        #closebtn{
+            color:white;
+            background-color: #f70a0a;
+            padding:10px;
+            height:30px;
+            width:80px;
+            font-weight:bold;
+            font-family: Arial;
+            font-size: 10px;
+
+        }
+        .quiz-button{
+            color:white;
+            background-color: #4A00E0;
+            padding:10px;
+            height:60px;
+            width:170px;
+            font-weight:bold;
+            font-family: Arial;
+            font-size: 15px;
+        }
+        .quiz-option:hover, .quiz-option.selected {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .quiz-option input {
+            display: none; 
+        }
+
+        
+
+        #student-details-section table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        #student-details-section th, 
+        #student-details-section td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        #student-details-section th {
+            background: #4A00E0;
+            color: white;
+        }
+        .question-container {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border: 2px solid #cd8eb1;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.quiz-option {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    margin: 5px 0;
+    border: 2px solid #1100ff;
+    background-color: white;
+    color: #151ece;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.3s;
+    font-size: 14px;
+}
+
+.quiz-option:hover,
+.quiz-option.selected {
+    background-color: rgb(6, 176, 232);
+    color: white;
+}
+
+.quiz-option input {
+    margin-right: 10px;
+    transform: scale(1.2);
+}
+
+        /* Center semester exam section */
+        #semester-exam-section {
+            position:absolute;
+            top: 50%;
+            left: 60%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            text-align: center;
+            justify-content: center;
+            width: 90vw !important;
+            max-width: 1000px !important;
+            display: flex;
+    justify-content: center;   /* horizontal center */
+    align-items: center;       /* vertical center */
+    height: 20vh;
+        }
+
+        /* Card Container */
+        .card-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px white;
+            text-align: center;
+            width: 90vw;
+            margin: auto;
+            display: flex;
+          position:absolute;
+            top: 30%;
+            left: 30%;
+
+        }
+
+        /* Attendance Table Styling */
+        #attendance-section table {
+            color: black;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #attendance-section table th,
+        #attendance-section table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            color: black;
+        }
+
+        #attendance-section table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        #attendance-section table tr:hover {
+            background: #f0f0f0;
+        }
+
+        /* Chatbot Styles */
+        #chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 380px;
+            height: 500px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 40px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            z-index: 9999;
+            font-family: Arial, sans-serif;
+        }
+
+        #chatbot-header {
+            background: linear-gradient(135deg, #4A00E0, #7928CA);
+            color: white;
+            padding: 15px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        #chatbot-close {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        #chatbot-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: #f9f9f9;
+        }
+
+        .chatbot-message {
+            margin-bottom: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 90%;
+            word-wrap: break-word;
+        }
+
+        .bot-message {
+            background: #E8DAEF;
+            color: #333;
+            border-left: 4px solid #4A00E0;
+        }
+
+        .user-message {
+            background: #4A00E0;
+            color: white;
+            margin-left: auto;
+        }
+
+        #chatbot-input-area {
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            gap: 10px;
+        }
+
+        #chatbot-input {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        #chatbot-send {
+            background: #4A00E0;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #chatbot-send:hover {
+            background: #3300c3;
+        }
+
+        #chatbot-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4A00E0, #7928CA);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(74, 0, 224, 0.4);
+            z-index: 9998;
+        }
+
+        #chatbot-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .quick-suggestions {
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .suggestion-btn {
+            display: inline-block;
+            background: #E8DAEF;
+            border: 1px solid #4A00E0;
+            padding: 6px 10px;
+            border-radius: 5px;
+            margin: 2px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #4A00E0;
+        }
+
+        .suggestion-btn:hover {
+            background: #D7C8E3;
+        }
+
+        @media (max-width: 600px) {
+            #chatbot-container {
+                width: 300px;
+                height: 400px;
+                bottom: 10px;
+                right: 10px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <nav>
+    <span>Student Dashboard</span>
+
+    <div style="display:flex; gap:10px;">
+        <button class="logout-btn" style="background:#6c63ff;" onclick="event.stopPropagation(); window.location.href='/account'" id="password-btn" type="button">Password</button>
+            <button class="logout-btn">Logout</button>
+    </div>
+</nav>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <button onclick="showSection('results')">Results</button>
+            <button onclick="showSection('student-details')">Student Details</button>
+            <button onclick="showSection('teacher-availability')">Teacher Availability</button>
+            <button onclick="showSection('quiz')">Quiz</button>
+            <button onclick="showSection('semester-exam')">IAT</button>
+            <button onclick="showSection('attendance')">Attendance</button>
+           
+
+        </div>
+
+        <div id="content-section">
+
+            <!-- Teacher Availability Section -->
+<div id="teacher-availability-section" class="hidden-section">
+    <h2 style="color: white;">Teacher Availability</h2>
+
+    <table id="teacher-table">
+        <tr>
+            <th>Teacher Name</th>
+            <th>Status</th>
+        </tr>
+
+        {% for teacher in teachers %}
+        <tr>
+            <td>{{ teacher[0] }}</td>
+            <td>
+                {% if teacher[1] == 1 %}
+                    <span style="color: green;">Available</span>
+                {% else %}
+                    <span style="color: red;">Not Available</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+            <!-- Quiz Section -->
+            <div id="quiz-section" class="hidden-section" style="text-align: center;">
+                <h2 style="color: white;">Select a Quiz</h2>
+                <div id="quiz-subjects-container" style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin: 20px;"></div>
+
+                <div class="modal" id="quizBox" style="display: none;">
+                    <h2 id="quiz-title" style="color: white;">Quiz</h2>
+                    <form id="quizForm">
+                        <div id="question-container" class="text-center"></div></br>
+                        <button type="button" id="submitBtn" onclick="calculateQuizScore()">Submit</button>
+                    </form>
+                    <div id="result"></div></br>
+                    <button onclick="closeQuiz()" id="closebtn">Close</button>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="results-section" class="hidden-section">
+                <h2 style="color: white;">IAT Score</h2>
+                <table id="marksheet-table">
+                    <tr><th>Subject</th><th>Marks</th></tr>
+                    {% for result in results %}
+                    <tr><td>{{ result[0] }}</td><td>{{ result[1] }}</td></tr>
+                    {% endfor %}
+                </table>
+
+                <h2 style="color: white;">Quiz Scores</h2>
+                <table id="quiz-score-table">
+                    <tr><th>Subject</th><th>Score</th></tr>
+                    {% for quiz in quiz_results %}
+                    <tr><td>{{ quiz[0] }}</td><td>{{ quiz[1] }} </td></tr>
+                    {% endfor %}
+                </table>
+
+                <!-- Print Marksheet Button -->
+                <button onclick="printMarksheet()" class="quiz-button">Print Marksheet</button>
+            </div>
+
+            <!-- Calculator Section -->
+            <div id="calculator-section" class="hidden-section">
+                <h2>Calculator</h2>
+                <p>Calculator will be displayed here.</p>
+            </div>
+
+            <!-- Student Details Section -->
+            <div id="student-details-section" class="hidden-section">
+                <div style="text-align: center; padding: 30px; background: rgba(74, 0, 224, 0.1); border-radius: 15px; margin-bottom: 30px;">
+                    <h1 style="color: #4A00E0; font-size: 32px; margin: 0; text-transform: uppercase; letter-spacing: 2px;">
+                        Welcome, <span style="color: #7928CA;">{{ student["name"] if student else "Student" }}</span>! 👋
+                    </h1>
+                    <p style="color: white; font-size: 16px; margin-top: 10px;">Here's your profile information</p>
+                </div>
+
+                <h2 style="color: white;">Student Details</h2>
+                <table>
+                    <tr><th>Name</th><td>{{ student["name"] if student else "N/A" }}</td></tr>
+                    <tr><th>Email</th><td>{{ student["email"] if student else email }}</td></tr>
+                    <tr><th>Roll No</th><td>{{ student["roll"] if student else "N/A" }}</td></tr>
+                    <tr><th>Course</th><td>{{ student["course"] if student else "N/A" }}</td></tr>
+                    <tr><th>Division</th><td>{{ student["division"] if student else "N/A" }}</td></tr>
+                    <tr><th>Fees</th><td>{{ student["fees"] if student else "N/A" }}</td></tr>
+                </table>
+            </div>
+        </div>
+        <!-- Semester Exam Section -->
+<div id="semester-exam-section" class="hidden-section">
+    <h2 style="color:white;">IAT Exam</h2>
+<br><br>
+    <!-- Subject Buttons -->
+    <button class="quiz-button" onclick="startExam('MC')">MC</button>
+    <button class="quiz-button" onclick="startExam('IOT')">IOT</button>
+    <button class="quiz-button" onclick="startExam('SPCC')">SPCC</button>
+    <button class="quiz-button" onclick="startExam('AI')">AI</button>
+
+    <!-- Exam Box -->
+    <div id="examBox" style="display:none;">
+        <h3 id="exam-subject" style="color:white;"></h3>
+
+        <div id="exam-question" class="question-container"></div>
+
+        <textarea id="answerBox" rows="5" style="width:100%; margin-top:10px;"></textarea>
+
+        <br><br>
+        <button onclick="nextQuestion()" class="quiz-button">Next</button>
+        <button onclick="submitExam()" class="quiz-button">Submit</button>
+    </div>
+</div>
+
+<!-- Attendance Section -->
+<div id="attendance-section" class="hidden-section card-container">
+    <h2 style="color: white;">My Attendance - <span id="attendance-student-name" style="color: #FFD700;"></span></h2>
+    <br>
+    
+    <!-- Tabs for switching between views -->
+    <div style="display: flex; gap: 10px; margin-bottom: 20px; justify-content: center;">
+        <button onclick="showAttendanceTab('overall')" id="overall-tab" style="padding: 10px 20px; background: #4A00E0; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">📊 Overall Attendance</button>
+        <button onclick="showAttendanceTab('analysis')" id="analysis-tab" style="padding: 10px 20px; background: #666; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">📈 Attendance Analysis</button>
+    </div>
+
+    <!-- Overall Attendance Tab -->
+    <div id="overall-tab-content" style="display: block;">
+        <!-- Calendar Date Picker -->
+        <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+            <label style="color: #4A00E0; font-weight: bold;">Filter by Date (Optional):</label><br><br>
+            <input type="date" id="attendanceFilter" style="padding: 10px; border: 2px solid #4A00E0; border-radius: 5px; width: 200px;">
+            <button onclick="filterOverallAttendanceByDate()" style="padding: 10px 20px; background: #4A00E0; color: white; border: none; border-radius: 5px; margin-left: 10px; cursor: pointer; font-weight: bold;">📅 Filter</button>
+            <button onclick="clearOverallAttendanceFilter()" style="padding: 10px 20px; background: #666; color: white; border: none; border-radius: 5px; margin-left: 10px; cursor: pointer; font-weight: bold;">Clear</button>
+        </div>
+
+        <!-- Overall Attendance Table -->
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; background: white; border-collapse: collapse; border-radius: 10px;">
+                <tr style="background: #4A00E0; color: white;">
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Teacher Name</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Subject</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Date</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Status</th>
+                </tr>
+                <tbody id="overall-attendance-table-body">
+                    <tr>
+                        <td colspan="4" style="padding: 15px; text-align: center; color: #999;">Loading attendance records...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Attendance Analysis Tab -->
+    <div id="analysis-tab-content" style="display: none;">
+        <!-- Subject Dropdown -->
+        <div style="display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; align-items: center;">
+            <label for="subject-dropdown" style="color: white; font-weight: bold;">Select Subject:</label>
+            <select id="subject-dropdown" style="padding: 10px 15px; border: 2px solid #4A00E0; border-radius: 5px; cursor: pointer; font-size: 14px;">
+                <option value="">-- Choose a Subject --</option>
+            </select>
+        </div>
+
+        <!-- Analysis Details Container -->
+        <div id="analysis-details-container" style="display: none; background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+            <!-- Stats Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 30px;">
+                <div style="background: linear-gradient(135deg, #4A00E0, #7928CA); color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                    <h4 style="margin: 0; font-size: 12px; opacity: 0.9;">Teacher Name</h4>
+                    <p id="analysis-teacher-name-display" style="font-size: 16px; font-weight: bold; margin-top: 10px;">-</p>
+                </div>
+                <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                    <h4 style="margin: 0; font-size: 12px; opacity: 0.9;">Subject</h4>
+                    <p id="analysis-subject-name-display" style="font-size: 16px; font-weight: bold; margin-top: 10px;">-</p>
+                </div>
+                <div style="background: linear-gradient(135deg, #1976d2, #1565c0); color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                    <h4 style="margin: 0; font-size: 12px; opacity: 0.9;">Total Lectures</h4>
+                    <p id="total-lectures-display" style="font-size: 18px; font-weight: bold; margin-top: 10px;">0</p>
+                </div>
+                <div style="background: linear-gradient(135deg, #43a047, #66bb6a); color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                    <h4 style="margin: 0; font-size: 12px; opacity: 0.9;">Days Present</h4>
+                    <p id="analysis-days-present-display" style="font-size: 18px; font-weight: bold; margin-top: 10px;">0</p>
+                </div>
+                <div style="background: linear-gradient(135deg, #ef5350, #f44336); color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                    <h4 style="margin: 0; font-size: 12px; opacity: 0.9;">Days Absent</h4>
+                    <p id="analysis-days-absent-display" style="font-size: 18px; font-weight: bold; margin-top: 10px;">0</p>
+                </div>
+                <div style="background: linear-gradient(135deg, #ff9800, #ffb74d); color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                    <h4 style="margin: 0; font-size: 12px; opacity: 0.9;">Attendance %</h4>
+                    <p id="analysis-percentage-display" style="font-size: 18px; font-weight: bold; margin-top: 10px;">0%</p>
+                </div>
+            </div>
+
+            <!-- Analysis Table -->
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; background: white; border-collapse: collapse; border-radius: 10px;">
+                    <tr style="background: #4A00E0; color: white;">
+                        <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Date</th>
+                        <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Status</th>
+                    </tr>
+                    <tbody id="analysis-attendance-table-body">
+                        <tr>
+                            <td colspan="2" style="padding: 15px; text-align: center; color: #999;">Select a subject to view attendance analysis</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- No Selection Message -->
+        <div id="analysis-no-selection-message" style="background: white; padding: 20px; border-radius: 10px; text-align: center; color: #666;">
+            <p style="font-size: 16px; margin: 0;">Please select a subject from the dropdown to view detailed attendance analysis.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Timetable Section -->
+<div id="timetable-section" class="hidden-section">
+    <h2 style="color: white;">Class Schedule / Timetable</h2>
+    <div style="overflow-x: auto; background: white; padding: 20px; border-radius: 10px;">
+        <table style="width: 100%; border-collapse: collapse; background: white;">
+            <tr style="background: #4A00E0; color: white;">
+                <th style="padding: 12px; border: 1px solid #ddd;">Time</th>
+                <th style="padding: 12px; border: 1px solid #ddd;">Monday</th>
+                <th style="padding: 12px; border: 1px solid #ddd;">Tuesday</th>
+                <th style="padding: 12px; border: 1px solid #ddd;">Wednesday</th>
+                <th style="padding: 12px; border: 1px solid #ddd;">Thursday</th>
+                <th style="padding: 12px; border: 1px solid #ddd;">Friday</th>
+            </tr>
+            <tbody id="timetable-body">
+                <tr>
+                    <td colspan="6" style="padding: 15px; text-align: center; color: #999;">Loading timetable...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Assignments Section -->
+<div id="assignments-section" class="hidden-section">
+    <h2 style="color: white;">Assignments</h2>
+    <div style="display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap;" id="assignment-subjects-container"></div>
+    
+    <!-- Assignment Details -->
+    <div id="assignment-details-container" style="display: none; background: white; padding: 20px; border-radius: 10px;">
+        <h3 id="assignment-title" style="color: #4A00E0; margin-top: 0;"></h3>
+        <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <p><strong>Subject:</strong> <span id="assignment-subject"></span></p>
+            <p><strong>Teacher:</strong> <span id="assignment-teacher"></span></p>
+            <p><strong>Posted:</strong> <span id="assignment-posted-date"></span></p>
+            <p><strong>Deadline:</strong> <span id="assignment-deadline"></span></p>
+            <p><strong>Description:</strong></p>
+            <p id="assignment-description" style="background: white; padding: 10px; border-radius: 5px;"></p>
+        </div>
+        
+        <!-- File Upload -->
+        <div style="border: 2px dashed #4A00E0; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 20px;">
+            <input type="file" id="assignment-file-input" style="display: none;">
+            <button onclick="document.getElementById('assignment-file-input').click()" style="padding: 10px 20px; background: #4A00E0; color: white; border: none; border-radius: 5px; cursor: pointer;">📁 Choose File</button>
+            <p id="file-name" style="margin-top: 10px; color: #666;"></p>
+        </div>
+        
+        <button onclick="submitAssignment()" style="padding: 10px 20px; background: #43a047; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%;">✅ Submit Assignment</button>
+    </div>
+    
+    <!-- No Selection Message -->
+    <div id="assignment-no-selection" style="background: white; padding: 20px; border-radius: 10px; text-align: center; color: #666;">
+        <p>Select a subject above to view assignments.</p>
+    </div>
+</div>
+
+<!-- Study Materials Section -->
+<div id="study-materials-section" class="hidden-section">
+    <h2 style="color: white;">Study Materials</h2>
+    <div style="display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap;" id="materials-subjects-container"></div>
+    
+    <!-- Materials Details -->
+    <div id="materials-details-container" style="display: none; background: white; padding: 20px; border-radius: 10px;">
+        <h3 id="materials-subject-title" style="color: #4A00E0; margin-top: 0;"></h3>
+        <div id="materials-list-container" style="display: grid; gap: 15px;"></div>
+    </div>
+    
+    <!-- No Selection Message -->
+    <div id="materials-no-selection" style="background: white; padding: 20px; border-radius: 10px; text-align: center; color: #666;">
+        <p>Select a subject above to view study materials.</p>
+    </div>
+</div>
+
+<!-- Complaint / Help Desk Section -->
+<div id="complaint-section" class="hidden-section">
+    <h2 style="color: white;">Complaint / Help Desk</h2>
+    <div style="background: white; padding: 20px; border-radius: 10px;">
+        <h3 style="color: #4A00E0; margin-top: 0;">Raise a Complaint</h3>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="color: #333; font-weight: bold;">Send to:</label><br>
+            <select id="complaint-recipient" style="width: 100%; padding: 10px; border: 2px solid #4A00E0; border-radius: 5px; margin-top: 10px;">
+                <option value="">-- Select Recipient --</option>
+                <option value="admin">Admin</option>
+                <option value="teacher">Teacher</option>
+            </select>
+        </div>
+        
+        <div id="teacher-dropdown-container" style="margin-bottom: 20px; display: none;">
+            <label style="color: #333; font-weight: bold;">Select Teacher:</label><br>
+            <select id="teacher-dropdown" style="width: 100%; padding: 10px; border: 2px solid #4A00E0; border-radius: 5px; margin-top: 10px;">
+                <option value="">-- Choose a Teacher --</option>
+            </select>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="color: #333; font-weight: bold;">Subject:</label><br>
+            <input type="text" id="complaint-subject" placeholder="Enter complaint subject" style="width: 100%; padding: 10px; border: 2px solid #ccc; border-radius: 5px; margin-top: 10px; box-sizing: border-box;">
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="color: #333; font-weight: bold;">Message:</label><br>
+            <textarea id="complaint-message" placeholder="Write your complaint or issue here..." style="width: 100%; padding: 10px; border: 2px solid #ccc; border-radius: 5px; margin-top: 10px; height: 150px; box-sizing: border-box; font-family: Arial;"></textarea>
+        </div>
+        
+        <button onclick="submitComplaint()" style="padding: 10px 20px; background: #4A00E0; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%;">📤 Submit Complaint</button>
+        
+        <hr style="margin: 30px 0; border: none; border-top: 2px solid #ddd;">
+        
+        <h3 style="color: #4A00E0;">My Complaints</h3>
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr style="background: #4A00E0; color: white;">
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Sent To</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Subject</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Date</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Status</th>
+                </tr>
+                <tbody id="complaints-table-body">
+                    <tr>
+                        <td colspan="4" style="padding: 15px; text-align: center; color: #999;">No complaints yet.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+    </div>
+
+    <!-- Chatbot Widget -->
+    <button id="chatbot-toggle" onclick="toggleChatbot()">💬</button>
+    
+    <div id="chatbot-container" style="display: none;">
+        <div id="chatbot-header">
+            <span>Student Guide Assistant</span>
+            <button id="chatbot-close" onclick="toggleChatbot()">✕</button>
+        </div>
+        <div id="chatbot-messages"></div>
+        <div id="chatbot-input-area">
+<input type="text" id="chatbot-input" placeholder="Ask me anything..." onkeydown="handleChatbotKey(event)">
+            <button id="chatbot-send" onclick="sendChatbotMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        // Global variables for quiz and exam management
+        let submittedQuizzes = new Set();
+        let currentQuizSubject = null;
+        let currentQuizQuestions = [];
+        let examActive = false;
+        let currentMode = ""; // Track if in "quiz" or "exam" mode
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.hidden-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(sectionId + '-section').style.display = 'block';
+        }
+
+        // Show student details by default on page load
+        function initializeQuizSection() {
+            const container = document.getElementById('quiz-subjects-container');
+            const subjects = ['MC', 'IOT', 'SPCC', 'AI'];
+            const subjectNames = {
+                'MC': 'Mobile Computing',
+                'IOT': 'Internet of Things',
+                'SPCC': 'System Programming',
+                'AI': 'Artificial Intelligence'
+            };
+
+            container.innerHTML = '';
+
+            subjects.forEach(subject => {
+                const subjectBox = document.createElement('div');
+                subjectBox.style.cssText = 'border: 2px solid #4A00E0; padding: 15px; border-radius: 8px; background: rgba(255,255,255,0.1); width: 250px; color: white; text-align: center;';
+                
+                const button = document.createElement('button');
+                button.id = `quiz-btn-${subject}`;
+                button.className = 'quiz-button';
+                button.textContent = subjectNames[subject];
+                button.style.width = '100%';
+                button.disabled = true;
+                button.style.opacity = '0.5';
+                button.style.cursor = 'not-allowed';
+                button.onclick = () => startStudentQuiz(subject);
+
+                const status = document.createElement('p');
+                status.id = `quiz-status-${subject}`;
+                status.style.margin = '10px 0';
+                status.style.fontSize = '12px';
+                status.textContent = 'Not Active';
+                status.style.color = '#ff6b6b';
+
+                subjectBox.appendChild(button);
+                subjectBox.appendChild(status);
+                container.appendChild(subjectBox);
+
+                // Check quiz status
+                checkQuizStatus(subject);
+            });
+        }
+
+        window.addEventListener('load', function() {
+            showSection('student-details');
+            initializeSubmittedExams();
+            initializeSubmittedQuizzes();  // Add this to load submitted quizzes
+            initializeQuizSection();
+            loadAttendanceRecords();
+            
+            // Poll quiz status every 3 seconds to detect when teacher starts quiz
+            setInterval(function() {
+                const subjects = ['MC', 'IOT', 'SPCC', 'AI'];
+                subjects.forEach(subject => {
+                    if (!submittedQuizzes.has(subject)) {
+                        checkQuizStatus(subject);
+                    }
+                });
+            }, 3000);
+        });
+
+        function checkQuizStatus(subject) {
+            fetch(`/check_quiz/${subject}?student_email={{ email }}`)
+                .then(res => res.json())
+                .then(data => {
+                    const button = document.getElementById(`quiz-btn-${subject}`);
+                    const status = document.getElementById(`quiz-status-${subject}`);
+
+                    // If already submitted, mark it
+                    if (data.submitted) {
+                        submittedQuizzes.add(subject);
+                        button.disabled = true;
+                        button.style.opacity = '0.5';
+                        button.style.cursor = 'not-allowed';
+                        status.textContent = 'Submitted';
+                        status.style.color = '#ff9800';
+                        return;
+                    }
+
+                    if (data.active) {
+                        button.disabled = false;
+                        button.style.opacity = '1';
+                        button.style.cursor = 'pointer';
+                        status.textContent = 'Active';
+                        status.style.color = '#51cf66';
+                    } else {
+                        button.disabled = true;
+                        button.style.opacity = '0.5';
+                        button.style.cursor = 'not-allowed';
+                        status.textContent = 'Not Active';
+                        status.style.color = '#ff6b6b';
+                    }
+                })
+                .catch(err => console.log("Error checking quiz status:", err));
+        }
+
+        function startStudentQuiz(subject) {
+    console.log("Starting quiz for subject:", subject);
+    
+    if (submittedQuizzes.has(subject)) {
+        alert("You have already submitted this quiz!");
+        return;
+    }
+
+    fetch(`/check_quiz/${subject}?student_email={{ email }}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.submitted) {
+                submittedQuizzes.add(subject);
+                alert("You have already submitted this quiz!");
+                return;
+            }
+
+            if (!data.questions || data.questions.length === 0) {
+                alert("No questions found!");
+                return;
+            }
+
+            currentQuizSubject = subject;
+            currentQuizQuestions = data.questions;
+            examActive = true;
+            currentMode = "quiz";
+            
+            enableFullScreen();
+            startCamera();
+
+            document.getElementById("quiz-title").innerText = `Quiz - ${subject}`;
+            const container = document.getElementById("question-container");
+            container.innerHTML = "";
+
+            const labels = ['A', 'B', 'C', 'D']; // Define mapping for options
+
+            currentQuizQuestions.forEach((q, index) => {
+                let questionText = q.question || q;
+                let options = q.options || [];
+
+                let questionHTML = `
+                    <div class="question-container">
+                        <p><strong>Q${index + 1}:</strong> ${questionText}</p>
+                        <div>
+                           ${options.map((option, i) => `
+                            <label class="quiz-option">
+                                <input type="radio" name="q${index}" value="${labels[i]}">
+                                <strong>${labels[i]}.</strong> ${option}
+                            </label>
+                        `).join('')}
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += questionHTML;
+            });
+
+            document.getElementById("quizBox").style.display = "block";
+            
+            // Re-bind selection highlighting
+            document.querySelectorAll('.quiz-option input').forEach(input => {
+                input.addEventListener('change', function () {
+                    let options = this.closest('.question-container').querySelectorAll('.quiz-option');
+                    options.forEach(option => option.classList.remove('selected')); 
+                    this.closest('.quiz-option').classList.add('selected'); 
+                });
+            });
+        })
+        .catch(err => alert("Error loading quiz: " + err));
+}
+
+function calculateQuizScore() {
+    // The chosen options are sent to the server. The server holds the correct
+    // options and works out the score.
+    let answers = currentQuizQuestions.map((q, index) => {
+        let selected = document.querySelector(`input[name="q${index}"]:checked`);
+        return selected ? selected.value : null;
+    });
+
+    submittedQuizzes.add(currentQuizSubject);
+
+    fetch("/submit_quiz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            subject: currentQuizSubject,
+            answers: answers
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(`Quiz submitted! Your score: ${data.score}/100.`);
+        } else {
+            alert("Quiz not saved: " + (data.error || "unknown error"));
+        }
+    })
+    .catch(error => console.error("Error:", error));
+
+    examActive = false;
+    currentMode = "";
+    document.getElementById("quizBox").style.display = "none";
+    if (document.fullscreenElement) document.exitFullscreen();
+}
+        
+
+        function closeQuiz() {
+            // Prevent closing without marking as submitted
+            if (currentQuizSubject && !submittedQuizzes.has(currentQuizSubject)) {
+                let confirmed = confirm("Closing the quiz will mark it as submitted. Continue?");
+                if (confirmed) {
+                    // Mark as submitted with 0 score if trying to close without submitting
+                    submittedQuizzes.add(currentQuizSubject);
+                    
+                    let studentEmail = "{{ email }}";
+                    fetch("/submit_quiz", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            subject: currentQuizSubject,
+                            answers: []
+                        })
+                    })
+                    .then(response => response.json())
+                    .catch(error => console.error("Error:", error));
+                    
+                    // Close the quiz modal
+                    document.getElementById("quizBox").style.display = "none";
+                    
+                    // Reset exam state
+                    examActive = false;
+                    currentMode = "";
+                    currentQuizSubject = null;
+                    currentQuizQuestions = [];
+                    
+                    // Exit fullscreen if active
+                    if (document.fullscreenElement) {
+                        document.exitFullscreen();
+                    }
+                    
+                    alert("Quiz closed! You did not submit any answers.");
+                } else {
+                    return;  
+                }
+            } else {
+                
+                document.getElementById("quizBox").style.display = "none";
+                examActive = false;
+                currentMode = "";
+                currentQuizSubject = null;
+                currentQuizQuestions = [];
+                
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        
+        window.addEventListener('load', function() {
+            initializeQuizSection();
+            
+            // Poll every 5 seconds to check quiz status
+            setInterval(function() {
+                const subjects = ['MC', 'IOT', 'SPCC', 'AI'];
+                subjects.forEach(subject => checkQuizStatus(subject));
+            }, 5000);
+        });
+
+        
+function printMarksheet() {
+    let studentName = "{{ student['name'] if student else 'N/A' }}";
+    let rollNo = "{{ student['roll'] if student else 'N/A' }}";
+    let classDiv = "{{ student['division'] if student else 'N/A' }}";  
+
+    let resultsTable = "";
+    let obtainedMarks = 0;
+    let totalMarks = 0;
+
+    document.querySelectorAll("#marksheet-table tr:not(:first-child)").forEach(row => {
+        let columns = row.querySelectorAll("td");
+        if (columns.length > 0) {
+            let subject = columns[0].innerText;
+            let marks = parseInt(columns[1].innerText || 0);
+            resultsTable += `
+                <tr>
+                    <td>${subject}</td>
+                    <td>100</td>
+                    <td>${marks}</td>
+                    <td>${getGrade(marks)}</td>
+                    <td></td>
+                </tr>
+            `;
+            obtainedMarks += marks;
+            totalMarks += 100;  // Each subject has 100 total marks
+        }
+    });
+
+    let quizTable = "";
+    document.querySelectorAll("#quiz-score-table tr:not(:first-child)").forEach(row => {
+        let columns = row.querySelectorAll("td");
+        if (columns.length > 0) {
+            let subject = columns[0].innerText;
+            let score = parseInt(columns[1].innerText.split(" / ")[0] || 0);  // Extract obtained marks
+            quizTable += `
+                <tr>
+                    <td>${subject} (Quiz)</td>
+                    <td>100</td>
+                    <td>${score}</td>
+                    <td>${getGrade(score)}</td>
+                    <td></td>
+                </tr>
+            `;
+            obtainedMarks += score;
+            totalMarks += 100;  // Each quiz has 100 total marks
+        }
+    });
+
+    let percentage = ((obtainedMarks / totalMarks) * 100).toFixed(2);
+    let grade = getGrade(percentage);
+
+    let printContent = `
+        <html>
+        <head>
+            <title>Student Marksheet</title>
+            <style>
+                body { font-family: Arial, sans-serif; }
+                .marksheet-container { text-align: center; border: 2px solid black; padding: 20px; width: 80%; margin: auto; }
+                .marksheet-header { font-size: 22px; font-weight: bold; color: red; }
+                table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+                th, td { border: 1px solid black; padding: 10px; text-align: left; }
+                th { background: #4A00E0; color: white; }
+                .footer { display: flex; justify-content: space-between; margin-top: 30px; }
+                .signature-box { width: 30%; text-align: center; border-top: 1px solid black; padding-top: 5px; }
+            </style>
+        </head>
+        <body>
+            <div class="marksheet-container">
+                <div class="marksheet-header">TERNA ENGINEERING COLLEGE</div>
+                <p>Nerul ,Navi Mumbai | Phone: 9876543210 | Email: ternaengg.ac.in</p>
+                <h2>SEM -6 Report Card (Academic Year 2025-26)</h2>
+                
+                <p><b>Roll No:</b> ${rollNo} &nbsp;&nbsp; <b>Class & Div:</b> ${classDiv} &nbsp;&nbsp; <b>Student Name:</b> ${studentName}</p>
+                
+                <table>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Total Marks</th>
+                        <th>Marks Obtained</th>
+                        <th>Subject Grade</th>
+                        <th>Remarks</th>
+                    </tr>
+                    ${resultsTable}
+                    ${quizTable}
+                    <tr>
+                        <td colspan="4" align="right"><b>Total:</b></td>
+                        <td>${obtainedMarks} / ${totalMarks}</td>
+                    </tr>
+                </table>
+                
+                <p><b>Rank:</b> _____ &nbsp;&nbsp; <b>Grade:</b> ${grade} &nbsp;&nbsp; <b>Overall Percentage:</b> ${percentage}%</p>
+                
+                <h3>Grading System</h3>
+                <table>
+                    <tr><th>90 - 100</th><th>80 - 90</th><th>70 - 80</th><th>60 - 70</th><th>50 - 60</th><th>40 - 50</th><th>0 - 40</th></tr>
+                    <tr><td>O</td><td>A+</td><td>A</td><td>B+</td><td>B</td><td>C</td><td>Fail</td></tr>
+                </table>
+                
+                <div class="footer">
+                    <div class="signature-box">Sophiya Shikalgar<br>Class Teacher</div>
+                    <div class="signature-box">Dr. Deven Shah <br>Principal</div>
+                    <div class="signature-box">Parents</div>
+                </div>
+            </div>
+        </body>
+        </html>
+    `;
+
+    let newWindow = window.open("", "_blank");
+    newWindow.document.write(printContent);
+    newWindow.document.close();
+    newWindow.print();
+}
+
+function getGrade(marks) {
+    marks = parseInt(marks);
+    if (marks >= 90) return "O";
+    if (marks >= 80) return "A+";
+    if (marks >= 70) return "A";
+    if (marks >= 60) return "B+";
+    if (marks >= 50) return "B";
+    if (marks >= 40) return "C";
+    return "Fail";
+}
+document.querySelector(".logout-btn:not(#password-btn)").addEventListener("click", function() {
+            window.location.href = "/logout";
+        });
+
+// Initialize submitted exams on page load
+function initializeSubmittedExams() {
+    const subjects = ['MC', 'IOT', 'SPCC', 'AI'];
+    subjects.forEach(subject => {
+        fetch(`/check_exam/${subject}?student_email={{ email }}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.submitted) {
+                submittedExams.add(subject);
+                disableExamButton(subject);
+            }
+        });
+    });
+}
+
+// Initialize submitted quizzes on page load
+function initializeSubmittedQuizzes() {
+    const subjects = ['MC', 'IOT', 'SPCC', 'AI'];
+    subjects.forEach(subject => {
+        fetch(`/check_quiz/${subject}?student_email={{ email }}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.submitted) {
+                submittedQuizzes.add(subject);
+            }
+        });
+    });
+}
+
+let examData = {};
+let currentExamSubject = "";
+let currentQuestionIndex = 0;
+let answers = [];
+let submittedExams = new Set();
+
+// Start Exam
+function startExam(subject) {
+    // Check if already submitted
+    if (submittedExams.has(subject)) {
+        alert("You have already submitted the " + subject + " exam!");
+        return;
+    }
+
+    fetch(`/check_exam/${subject}?student_email={{ email }}`)
+    .then(res => res.json())
+    .then(data => {
+        if (data.submitted) {
+            submittedExams.add(subject);
+            alert("You have already submitted the " + subject + " exam!");
+            return;
+        }
+
+        if (!data.active) {
+            alert("Exam not started by teacher!");
+            return;
+        }
+        
+        examActive = true;
+        currentMode = "exam";
+        enableFullScreen();
+        startCamera();
+
+        currentExamSubject = subject;
+        examData = data.questions;
+        currentQuestionIndex = 0;
+        answers = [];
+
+        document.getElementById("examBox").style.display = "block";
+        document.getElementById("exam-subject").innerText = subject + " Exam";
+
+        showQuestion();
+    });
+}
+
+// Show Question
+function showQuestion() {
+    let q = examData[currentQuestionIndex];
+
+    document.getElementById("exam-question").innerHTML =
+        `<b>Q${currentQuestionIndex + 1}:</b> ${q}`;
+
+    document.getElementById("answerBox").value = answers[currentQuestionIndex] || "";
+}
+
+// Next Button
+function nextQuestion() {
+    answers[currentQuestionIndex] = document.getElementById("answerBox").value;
+
+    if (currentQuestionIndex < examData.length - 1) {
+        currentQuestionIndex++;
+        showQuestion();
+    } else {
+        alert("Last question reached!");
+    }
+}
+
+// Submit Exam
+function submitExam() {
+    
+    answers[currentQuestionIndex] = document.getElementById("answerBox").value;
+
+    fetch("/submit_exam", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            subject: currentExamSubject,
+            answers: answers,
+            student_email: "{{ email }}"
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert("Exam submitted successfully!");
+            submittedExams.add(currentExamSubject);
+            document.getElementById("examBox").style.display = "none";
+            disableExamButton(currentExamSubject);
+            
+            // Reset exam state
+            examActive = false;
+            currentMode = "";
+            currentExamSubject = "";
+            currentQuestionIndex = 0;
+            answers = [];
+            
+            // Exit fullscreen if active
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+        } else {
+            alert("Error: " + (data.error || "Failed to submit exam"));
+        }
+    })
+    .catch(err => {
+        alert("Error submitting exam: " + err);
+    });
+}
+
+// Disable exam button after submission
+function disableExamButton(subject) {
+    const buttons = document.querySelectorAll('.quiz-button');
+    buttons.forEach(btn => {
+        if (btn.innerText === subject) {
+            btn.disabled = true;
+            btn.style.opacity = "0.5";
+            btn.style.cursor = "not-allowed";
+            btn.innerText = subject + " (Submitted)";
+        }
+    });
+}
+
+// Detect tab switch
+document.addEventListener("visibilitychange", function () {
+    if (examActive && document.hidden) {
+        alert("⚠️ Tab switching detected! This is not allowed.");
+    }
+});
+
+// Disable right click
+document.addEventListener("contextmenu", function (e) {
+    if (examActive) {
+        e.preventDefault();
+        alert("Right click is disabled during exam!");
+    }
+});
+
+// Disable copy/paste
+document.addEventListener("keydown", function (e) {
+    if (examActive) {
+        if (e.ctrlKey && (e.key === 'c' || e.key === 'v' || e.key === 'u')) {
+            e.preventDefault();
+            alert("Copy/Paste not allowed during exam!");
+        }
+    }
+});
+
+
+function enableFullScreen() {
+    let elem = document.documentElement;
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    }
+}
+
+document.addEventListener("fullscreenchange", function () {
+    if (examActive && !document.fullscreenElement) {
+        alert("⚠️ You exited fullscreen! Submission will now be completed.");
+        
+        // Handle based on current mode
+        if (currentMode === "quiz") {
+            calculateQuizScore();
+        } else if (currentMode === "exam") {
+            submitExam();
+        }
+    }
+});
+
+function startCamera() {
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            console.log("Camera ON");
+        })
+        .catch(err => {
+            alert("⚠️ Camera access required for exam!");
+        });
+}
+
+function checkExamStatus(subject, student_email) {
+    fetch(`/check_exam/${subject}?student_email=${student_email}`)
+        .then(res => res.json())
+        .then(data => {
+            console.log(subject, "exam status:", data);
+            const statusDiv = document.getElementById(`exam-status-${subject}`);
+            if (!statusDiv) return;
+
+            if (data.active) {
+                statusDiv.innerText = "Exam is Active!";
+                statusDiv.style.color = "green";
+            } else {
+                statusDiv.innerText = "Exam not started";
+                statusDiv.style.color = "red";
+            }
+        })
+        .catch(err => console.error(err));
+}
+
+// Example: poll every 5 seconds
+setInterval(() => {
+    const subjects = ['MC','IOT','SPCC','AI'];
+    const email = "{{ email }}";  // Jinja variable
+    subjects.forEach(sub => checkExamStatus(sub, email));
+}, 5000);
+
+// ============ CHATBOT FUNCTIONALITY ============
+const chatbotKnowledgeBase = {
+    "results": "Results section shows your exam marks and quiz scores in a table format. You can also print a marksheet from here that includes all your academic records.",
+    "quiz": "Quiz section allows you to attempt quizzes for different subjects (MC, IOT, SPCC, AI). Click a subject button to start the quiz. You must maintain full screen mode and score at least 40/100 to pass.",
+    "student details": "Student Details shows your personal information including name, email, roll number, course, division, and fees status registered by the institute.",
+    "calculator": "Calculator allows you to perform basic mathematical calculations. Click the Calculator button to access it.",
+    "teacher availability": "Teacher Availability shows all registered teachers and their current status (Available or Not Available). You can reach out when a teacher is marked as Available.",
+    "semester exam": "Semester Exam allows you to attempt formal semester exams when activated by teachers. Exams require full screen mode and camera access. You must answer all questions before submitting.",
+    "full screen": "Full screen mode is mandatory for both quizzes and exams to prevent cheating. If you exit full screen, the quiz/exam will be automatically submitted. Always use full screen for assessments.",
+    "exam criteria": "Semester Exam Criteria: 1) Exam must be activated by teacher 2) Requires 10 questions 3) Must be in full screen mode 4) Camera must be accessible 5) Exiting full screen auto-submits exam.",
+    "quiz criteria": "Quiz Criteria: 1) Each subject can be attempted only once 2) Takes 2 questions per subject 3) You must achieve minimum 40 marks to pass 4) Must maintain full screen mode 5) Exiting full screen auto-submits.",
+    "attendance": "Attendance section shows all your attendance records marked by teachers. It displays the date, your status (Present/Absent), and the teacher's email who marked it. You can filter by date to view a specific day's attendance.",
+    "dashboard buttons": "Main Buttons: Results (view marks/scores), Quiz (attempt quizzes), Student Details (view profile), Calculator (math tool), Teacher Availability (check teacher status), Semester Exam (take exams), Attendance (view records).",
+    "help": "I can help you understand: Dashboard features, How to take quizzes, How to take exams, What each button does, Quiz/exam criteria, Full screen requirements, Grading system. Just ask!",
+    "passing marks": "Passing marks for quizzes is 40 out of 100. For exams, the passing criteria depends on what your teacher sets. Check your results section for grading details.",
+    "hi": "Hello! 👋 I'm your Student Guide Assistant. I can help you understand the dashboard, quizzes, exams, and more. What would you like to know?",
+    "hello": "Hello! 👋 I'm your Student Guide Assistant. I can help you understand the dashboard, quizzes, exams, and more. What would you like to know?"
+};
+
+function toggleChatbot() {
+    const container = document.getElementById('chatbot-container');
+    const toggle = document.getElementById('chatbot-toggle');
+    
+    if (container.style.display === 'none') {
+        container.style.display = 'flex';
+        if (document.getElementById('chatbot-messages').children.length === 0) {
+            addBotMessage("Hello! 👋 I'm your Student Guide Assistant. I can help you with dashboard features, quizzes, exams, and more. What would you like to know?");
+        }
+    } else {
+        container.style.display = 'none';
+    }
+}
+
+function addBotMessage(message) {
+    const messagesDiv = document.getElementById('chatbot-messages');
+    const msgEl = document.createElement('div');
+    msgEl.className = 'chatbot-message bot-message';
+    msgEl.textContent = message;
+    messagesDiv.appendChild(msgEl);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+function addUserMessage(message) {
+    const messagesDiv = document.getElementById('chatbot-messages');
+    const msgEl = document.createElement('div');
+    msgEl.className = 'chatbot-message user-message';
+    msgEl.textContent = message;
+    messagesDiv.appendChild(msgEl);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// Other words users type for each topic of the knowledge base.
+const chatbotSynonyms = {
+    "results": [
+        "marks",
+        "score",
+        "marksheet",
+        "mark sheet",
+        "report card",
+        "grade"
+    ],
+    "quiz": [
+        "mcq",
+        "mcq test",
+        "objective test"
+    ],
+    "student details": [
+        "profile",
+        "my details",
+        "roll number",
+        "roll no",
+        "division",
+        "personal information"
+    ],
+    "calculator": [
+        "calculate",
+        "calculation",
+        "maths",
+        "math"
+    ],
+    "teacher availability": [
+        "availability",
+        "teacher available",
+        "professor",
+        "faculty",
+        "meet teacher",
+        "teacher free"
+    ],
+    "semester exam": [
+        "exam",
+        "iat",
+        "internal test",
+        "internal assessment",
+        "written test"
+    ],
+    "full screen": [
+        "fullscreen",
+        "minimise",
+        "minimize",
+        "switch tab",
+        "leave the screen",
+        "exit screen"
+    ],
+    "exam criteria": [
+        "exam rules",
+        "rules for exam",
+        "exam requirements",
+        "exam instructions"
+    ],
+    "quiz criteria": [
+        "quiz rules",
+        "rules for quiz",
+        "quiz instructions",
+        "quiz attempts",
+        "attempt",
+        "how many questions"
+    ],
+    "attendance": [
+        "present",
+        "absent",
+        "lecture",
+        "missed"
+    ],
+    "dashboard buttons": [
+        "buttons",
+        "menu",
+        "options",
+        "sections",
+        "features",
+        "home page"
+    ],
+    "help": [
+        "what can you do",
+        "how to use",
+        "guide",
+        "support"
+    ],
+    "passing marks": [
+        "pass",
+        "passing",
+        "fail",
+        "minimum marks",
+        "cut off",
+        "cutoff"
+    ]
+};
+
+// Lower case, punctuation removed, plural "s" dropped, single spaces.
+function normalizeChatText(text) {
+    return text.toLowerCase()
+        .replace(/[^a-z0-9\s]/g, " ")
+        .split(/\s+/)
+        .filter(word => word.length > 0)
+        .map(word => (word.length > 3 && word.endsWith("s") && !word.endsWith("ss")) ? word.slice(0, -1) : word)
+        .join(" ");
+}
+
+// Number of single-letter edits (insert, delete, replace, swap of two
+// neighbouring letters) needed to turn one string into the other.
+function editDistance(a, b) {
+    const d = [];
+    for (let i = 0; i <= a.length; i++) {
+        d.push([i]);
+        for (let j = 1; j <= b.length; j++) {
+            if (i === 0) { d[0].push(j); continue; }
+            const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+            let value = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+            if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+                value = Math.min(value, d[i - 2][j - 2] + 1);
+            }
+            d[i].push(value);
+        }
+    }
+    return d[a.length][b.length];
+}
+
+// Every phrase the assistant knows: the key of each answer and its synonyms.
+function chatbotPhrases() {
+    const phrases = [];
+    for (let key in chatbotKnowledgeBase) {
+        phrases.push({ text: normalizeChatText(key), key: key, isKey: true });
+        (chatbotSynonyms[key] || []).forEach(word => {
+            phrases.push({ text: normalizeChatText(word), key: key, isKey: false });
+        });
+    }
+    return phrases;
+}
+
+function findAnswer(userInput) {
+    const fallback = "I'm not sure about that. Try asking about: Results, Quiz, Student Details, Calculator, Teacher Availability, Semester Exam, Full Screen, Quiz Criteria, Exam Criteria, Dashboard Buttons, or Help.";
+    const input = normalizeChatText(userInput);
+    if (input === "") return fallback;
+
+    const phrases = chatbotPhrases();
+    const padded = " " + input + " ";
+
+    // 1. Longest known phrase that appears in the question as whole words.
+    //    A key wins over a synonym of the same length.
+    let best = null;
+    phrases.forEach(p => {
+        if (padded.includes(" " + p.text + " ")) {
+            if (best === null || p.text.length > best.text.length ||
+                (p.text.length === best.text.length && p.isKey && !best.isKey)) {
+                best = p;
+            }
+        }
+    });
+    if (best) return chatbotKnowledgeBase[best.key];
+
+    // 2. A short question that is part of a key, for example "exam".
+    if (input.length >= 3) {
+        const part = phrases.find(p => p.isKey && (" " + p.text + " ").includes(padded));
+        if (part) return chatbotKnowledgeBase[part.key];
+    }
+
+    // 3. Spelling mistakes: compare each phrase with every run of the same
+    //    number of words in the question and accept a small edit distance.
+    const words = input.split(" ");
+    let closest = null;
+    phrases.forEach(p => {
+        if (p.text.length < (p.isKey ? 4 : 5)) return;
+        const size = p.text.split(" ").length;
+        const allowed = p.text.length <= 6 ? 1 : (p.text.length <= 12 ? 2 : 3);
+        for (let start = 0; start + size <= words.length; start++) {
+            const piece = words.slice(start, start + size).join(" ");
+            const distance = editDistance(piece, p.text);
+            if (distance <= allowed) {
+                const closeness = 1 - distance / p.text.length;
+                if (closest === null || closeness > closest.closeness ||
+                    (closeness === closest.closeness && p.text.length > closest.text.length)) {
+                    closest = { key: p.key, text: p.text, closeness: closeness };
+                }
+            }
+        }
+    });
+    if (closest) return chatbotKnowledgeBase[closest.key];
+
+    // 4. Nothing matched.
+    return fallback;
+}
+
+function sendChatbotMessage() {
+    const input = document.getElementById('chatbot-input');
+    const message = input.value.trim();
+    
+    if (message === '') return;
+    
+    addUserMessage(message);
+    const answer = findAnswer(message);
+    setTimeout(() => {
+        addBotMessage(answer);
+    }, 300);
+    
+    input.value = '';
+}
+
+function handleChatbotKey(event) {
+    if (event.key === 'Enter') {
+        sendChatbotMessage();
+    }
+}
+
+// ============ ATTENDANCE FUNCTIONALITY ============
+let attendanceData = {};
+let allSubjects = [];
+let teacherNameBySubject = {};
+let originalAttendanceData = {};
+
+function loadAttendanceRecords() {
+    const studentEmail = "{{ email }}";
+    
+    fetch(`/get_student_attendance/${studentEmail}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.records.length > 0) {
+                // Organize records by subject
+                attendanceData = {};
+                originalAttendanceData = {};
+                allSubjects = [];
+                teacherNameBySubject = {};
+                
+                data.records.forEach(record => {
+                    const subject = record.subject || 'General';
+                    
+                    if (!attendanceData[subject]) {
+                        attendanceData[subject] = [];
+                        allSubjects.push(subject);
+                    }
+                    
+                    attendanceData[subject].push(record);
+                    originalAttendanceData[subject] = [...attendanceData[subject]];
+                    
+                    // Store teacher email for this subject
+                    if (record.teacher_email) {
+                        teacherNameBySubject[subject] = record.teacher_email;
+                    }
+                });
+                
+                // Populate subject dropdown
+                populateSubjectDropdown();
+                
+                // Display overall attendance by default
+                displayOverallAttendance();
+            } else {
+                showNoAttendanceMessage();
+            }
+        })
+        .catch(error => {
+            console.error("Error loading attendance:", error);
+            showNoAttendanceMessage();
+        });
+}
+
+function showAttendanceTab(tabName) {
+    // Hide all tabs
+    document.getElementById('overall-tab-content').style.display = 'none';
+    document.getElementById('analysis-tab-content').style.display = 'none';
+    
+    // Remove active style from all tabs
+    document.getElementById('overall-tab').style.background = '#666';
+    document.getElementById('analysis-tab').style.background = '#666';
+    
+    // Show selected tab
+    if (tabName === 'overall') {
+        document.getElementById('overall-tab-content').style.display = 'block';
+        document.getElementById('overall-tab').style.background = '#4A00E0';
+        displayOverallAttendance();
+    } else if (tabName === 'analysis') {
+        document.getElementById('analysis-tab-content').style.display = 'block';
+        document.getElementById('analysis-tab').style.background = '#4A00E0';
+        // Reset dropdown
+        document.getElementById('subject-dropdown').value = '';
+        document.getElementById('analysis-details-container').style.display = 'none';
+        document.getElementById('analysis-no-selection-message').style.display = 'block';
+    }
+}
+
+function displayOverallAttendance() {
+    const tbody = document.getElementById('overall-attendance-table-body');
+    tbody.innerHTML = '';
+    
+    let hasRecords = false;
+    
+    // Display all records grouped by subject
+    allSubjects.forEach(subject => {
+        const records = attendanceData[subject] || [];
+        const teacherEmail = teacherNameBySubject[subject] || 'N/A';
+        
+        records.forEach(record => {
+            hasRecords = true;
+            const statusColor = record.status === 'Present' ? '#2e7d32' : '#c62828';
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td style="padding: 12px; border: 1px solid #ddd;">${teacherEmail}</td>
+                <td style="padding: 12px; border: 1px solid #ddd;">${subject}</td>
+                <td style="padding: 12px; border: 1px solid #ddd;">${record.date}</td>
+                <td style="padding: 12px; border: 1px solid #ddd; color: ${statusColor}; font-weight: bold;">${record.status}</td>
+            `;
+            tbody.appendChild(row);
+        });
+    });
+    
+    if (!hasRecords) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" style="padding: 15px; text-align: center; color: #999;">No attendance records found.</td>
+            </tr>
+        `;
+    }
+}
+
+function filterOverallAttendanceByDate() {
+    const selectedDate = document.getElementById('attendanceFilter').value;
+    
+    if (!selectedDate) {
+        alert('Please select a date');
+        return;
+    }
+    
+    const tbody = document.getElementById('overall-attendance-table-body');
+    tbody.innerHTML = '';
+    
+    let hasRecords = false;
+    
+    // Filter records by date
+    allSubjects.forEach(subject => {
+        const records = originalAttendanceData[subject] || [];
+        const teacherEmail = teacherNameBySubject[subject] || 'N/A';
+        
+        records.forEach(record => {
+            if (record.date === selectedDate) {
+                hasRecords = true;
+                const statusColor = record.status === 'Present' ? '#2e7d32' : '#c62828';
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="padding: 12px; border: 1px solid #ddd;">${teacherEmail}</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">${subject}</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">${record.date}</td>
+                    <td style="padding: 12px; border: 1px solid #ddd; color: ${statusColor}; font-weight: bold;">${record.status}</td>
+                `;
+                tbody.appendChild(row);
+            }
+        });
+    });
+    
+    if (!hasRecords) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" style="padding: 15px; text-align: center; color: #999;">No records found for the selected date.</td>
+            </tr>
+        `;
+    }
+}
+
+function clearOverallAttendanceFilter() {
+    document.getElementById('attendanceFilter').value = '';
+    displayOverallAttendance();
+}
+
+function populateSubjectDropdown() {
+    const dropdown = document.getElementById('subject-dropdown');
+    dropdown.innerHTML = '<option value="">-- Choose a Subject --</option>';
+    
+    allSubjects.forEach(subject => {
+        const option = document.createElement('option');
+        option.value = subject;
+        option.textContent = subject;
+        dropdown.appendChild(option);
+    });
+    
+    // Add change listener
+    dropdown.addEventListener('change', function() {
+        if (this.value) {
+            displaySubjectAnalysis(this.value);
+        } else {
+            document.getElementById('analysis-details-container').style.display = 'none';
+            document.getElementById('analysis-no-selection-message').style.display = 'block';
+        }
+    });
+}
+
+function displaySubjectAnalysis(subject) {
+    const records = originalAttendanceData[subject] || [];
+    
+    if (records.length === 0) {
+        document.getElementById('analysis-details-container').style.display = 'none';
+        document.getElementById('analysis-no-selection-message').style.display = 'block';
+        return;
+    }
+    
+    // Calculate statistics
+    let presentCount = 0;
+    let absentCount = 0;
+    
+    records.forEach(record => {
+        if (record.status === 'Present') {
+            presentCount++;
+        } else if (record.status === 'Absent') {
+            absentCount++;
+        }
+    });
+    
+    const totalLectures = presentCount + absentCount;
+    const attendancePercentage = totalLectures > 0 ? ((presentCount / totalLectures) * 100).toFixed(2) : 0;
+    
+    // Get teacher email for this subject
+    const teacherEmail = teacherNameBySubject[subject] || 'N/A';
+    
+    // Update stats display
+    document.getElementById('analysis-teacher-name-display').textContent = teacherEmail || 'N/A';
+    document.getElementById('analysis-subject-name-display').textContent = subject;
+    document.getElementById('total-lectures-display').textContent = totalLectures;
+    document.getElementById('analysis-days-present-display').textContent = presentCount;
+    document.getElementById('analysis-days-absent-display').textContent = absentCount;
+    document.getElementById('analysis-percentage-display').textContent = attendancePercentage + '%';
+    
+    // Update table
+    const tbody = document.getElementById('analysis-attendance-table-body');
+    tbody.innerHTML = '';
+    
+    records.forEach(record => {
+        const statusColor = record.status === 'Present' ? '#2e7d32' : '#c62828';
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td style="padding: 12px; border: 1px solid #ddd;">${record.date}</td>
+            <td style="padding: 12px; border: 1px solid #ddd; color: ${statusColor}; font-weight: bold;">${record.status}</td>
+        `;
+        tbody.appendChild(row);
+    });
+    
+    // Show details and hide no-selection message
+    document.getElementById('analysis-details-container').style.display = 'block';
+    document.getElementById('analysis-no-selection-message').style.display = 'none';
+}
+
+function showNoAttendanceMessage() {
+    document.getElementById('overall-attendance-table-body').innerHTML = `
+        <tr>
+            <td colspan="4" style="padding: 15px; text-align: center; color: #999;">No attendance records found. Your attendance will be displayed here once the teacher marks it.</td>
+        </tr>
+    `;
+    document.getElementById('analysis-no-selection-message').innerHTML = '<p style="font-size: 16px; margin: 0; color: #666;">No attendance records found. Your attendance will be displayed here once the teacher marks it.</p>';
+}
+
+// Load attendance records when page loads
+window.addEventListener('load', function() {
+    loadAttendanceRecords();
+});
+
+// Reload attendance when attendance section is shown
+const originalShowSection = window.showSection;
+window.showSection = function(sectionId) {
+    originalShowSection(sectionId);
+    if (sectionId === 'attendance') {
+        loadAttendanceRecords();
+        showAttendanceTab('overall');
+    }
+    if (sectionId === 'complaint') {
+        loadComplaints();
+    }
+    if (sectionId === 'assignments') {
+        loadAssignmentSubjects();
+    }
+    if (sectionId === 'study-materials') {
+        loadStudyMaterialSubjects();
+    }
+};
+
+// ============ TIMETABLE FUNCTIONALITY ============
+function loadTimetable() {
+    const studentEmail = "{{ email }}";
+    fetch(`/get_timetable/${studentEmail}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.timetable) {
+                displayTimetable(data.timetable);
+            } else {
+                document.getElementById('timetable-body').innerHTML = `<tr><td colspan="6" style="padding: 15px; text-align: center; color: #999;">No timetable found.</td></tr>`;
+            }
+        })
+        .catch(err => console.log("Error loading timetable:", err));
+}
+
+function displayTimetable(timetable) {
+    const tbody = document.getElementById('timetable-body');
+    tbody.innerHTML = '';
+    
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+    const times = Object.keys(timetable).sort();
+    
+    times.forEach(time => {
+        const row = document.createElement('tr');
+        let rowHTML = `<td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; background: #f5f5f5;">${time}</td>`;
+        
+        days.forEach(day => {
+            const dayKey = day.toLowerCase();
+            const cellData = timetable[time][dayKey] || '-';
+            rowHTML += `<td style="padding: 12px; border: 1px solid #ddd;">${cellData}</td>`;
+        });
+        
+        row.innerHTML = rowHTML;
+        tbody.appendChild(row);
+    });
+}
+
+// ============ ASSIGNMENTS FUNCTIONALITY ============
+let allAssignmentSubjects = [];
+
+function loadAssignmentSubjects() {
+    const studentEmail = "{{ email }}";
+    fetch(`/get_assignments/${studentEmail}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.assignments.length > 0) {
+                const subjects = [...new Set(data.assignments.map(a => a.subject))];
+                allAssignmentSubjects = subjects;
+                
+                const container = document.getElementById('assignment-subjects-container');
+                container.innerHTML = '';
+                
+                subjects.forEach(subject => {
+                    const btn = document.createElement('button');
+                    btn.style.cssText = 'padding: 10px 20px; background: #4A00E0; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;';
+                    btn.textContent = subject;
+                    btn.onclick = () => displayAssignment(subject);
+                    container.appendChild(btn);
+                });
+                
+                document.getElementById('assignment-no-selection').style.display = 'block';
+                document.getElementById('assignment-details-container').style.display = 'none';
+            }
+        })
+        .catch(err => console.log("Error loading assignments:", err));
+}
+
+function displayAssignment(subject) {
+    const studentEmail = "{{ email }}";
+    fetch(`/get_assignments/${studentEmail}`)
+        .then(res => res.json())
+        .then(data => {
+            const assignment = data.assignments.find(a => a.subject === subject);
+            if (assignment) {
+                document.getElementById('assignment-title').textContent = assignment.title;
+                document.getElementById('assignment-subject').textContent = assignment.subject;
+                document.getElementById('assignment-teacher').textContent = assignment.teacher_email || 'N/A';
+                document.getElementById('assignment-posted-date').textContent = assignment.posted_date || 'N/A';
+                document.getElementById('assignment-deadline').textContent = assignment.deadline || 'N/A';
+                document.getElementById('assignment-description').textContent = assignment.description || 'No description provided';
+                
+                document.getElementById('assignment-no-selection').style.display = 'none';
+                document.getElementById('assignment-details-container').style.display = 'block';
+                
+                // Store current subject for submission
+                window.currentAssignmentSubject = subject;
+            }
+        })
+        .catch(err => console.log("Error loading assignment:", err));
+}
+
+document.getElementById('assignment-file-input')?.addEventListener('change', function() {
+    const fileName = this.files[0]?.name || '';
+    document.getElementById('file-name').textContent = fileName ? `Selected: ${fileName}` : '';
+});
+
+function submitAssignment() {
+    const fileInput = document.getElementById('assignment-file-input');
+    if (!fileInput.files[0]) {
+        alert('Please select a file to submit');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('student_email', "{{ email }}");
+    formData.append('subject', window.currentAssignmentSubject);
+    formData.append('file', fileInput.files[0]);
+    
+    fetch('/submit_assignment', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert('Assignment submitted successfully!');
+            fileInput.value = '';
+            document.getElementById('file-name').textContent = '';
+        } else {
+            alert('Error submitting assignment: ' + data.message);
+        }
+    })
+    .catch(err => alert('Error: ' + err));
+}
+
+// ============ STUDY MATERIALS FUNCTIONALITY ============
+let allMaterialSubjects = [];
+
+function loadStudyMaterialSubjects() {
+    const studentEmail = "{{ email }}";
+    fetch(`/get_study_materials/${studentEmail}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.materials.length > 0) {
+                const subjects = [...new Set(data.materials.map(m => m.subject))];
+                allMaterialSubjects = subjects;
+                
+                const container = document.getElementById('materials-subjects-container');
+                container.innerHTML = '';
+                
+                subjects.forEach(subject => {
+                    const btn = document.createElement('button');
+                    btn.style.cssText = 'padding: 10px 20px; background: #4A00E0; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;';
+                    btn.textContent = subject;
+                    btn.onclick = () => displayStudyMaterials(subject);
+                    container.appendChild(btn);
+                });
+                
+                document.getElementById('materials-no-selection').style.display = 'block';
+                document.getElementById('materials-details-container').style.display = 'none';
+            }
+        })
+        .catch(err => console.log("Error loading study materials:", err));
+}
+
+function displayStudyMaterials(subject) {
+    const studentEmail = "{{ email }}";
+    fetch(`/get_study_materials/${studentEmail}`)
+        .then(res => res.json())
+        .then(data => {
+            const materials = data.materials.filter(m => m.subject === subject);
+            if (materials.length > 0) {
+                document.getElementById('materials-subject-title').textContent = subject;
+                const listContainer = document.getElementById('materials-list-container');
+                listContainer.innerHTML = '';
+                
+                materials.forEach(material => {
+                    const card = document.createElement('div');
+                    card.style.cssText = 'border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: #f9f9f9;';
+                    card.innerHTML = `
+                        <h4 style="margin: 0 0 10px 0; color: #4A00E0;">${material.title}</h4>
+                        <p style="margin: 5px 0; color: #666;"><strong>Type:</strong> ${material.file_type}</p>
+                        <p style="margin: 5px 0; color: #666;"><strong>Uploaded:</strong> ${material.upload_date}</p>
+                        <a href="${material.file_url}" target="_blank" style="display: inline-block; margin-top: 10px; padding: 8px 15px; background: #4A00E0; color: white; text-decoration: none; border-radius: 5px;">📥 Download</a>
+                    `;
+                    listContainer.appendChild(card);
+                });
+                
+                document.getElementById('materials-no-selection').style.display = 'none';
+                document.getElementById('materials-details-container').style.display = 'block';
+            }
+        })
+        .catch(err => console.log("Error loading materials:", err));
+}
+
+// ============ COMPLAINT / HELP DESK FUNCTIONALITY ============
+function loadComplaints() {
+    const studentEmail = "{{ email }}";
+    fetch(`/get_complaints/${studentEmail}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.complaints.length > 0) {
+                displayComplaintsList(data.complaints);
+            }
+        })
+        .catch(err => console.log("Error loading complaints:", err));
+    
+    // Load teacher list
+    fetch('/get_teachers')
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.teachers.length > 0) {
+                const dropdown = document.getElementById('teacher-dropdown');
+                dropdown.innerHTML = '<option value="">-- Choose a Teacher --</option>';
+                data.teachers.forEach(teacher => {
+                    const option = document.createElement('option');
+                    option.value = teacher.email;
+                    option.textContent = teacher.name;
+                    dropdown.appendChild(option);
+                });
+            }
+        })
+        .catch(err => console.log("Error loading teachers:", err));
+}
+
+document.getElementById('complaint-recipient')?.addEventListener('change', function() {
+    if (this.value === 'teacher') {
+        document.getElementById('teacher-dropdown-container').style.display = 'block';
+    } else {
+        document.getElementById('teacher-dropdown-container').style.display = 'none';
+    }
+});
+
+function submitComplaint() {
+    const recipient = document.getElementById('complaint-recipient').value;
+    const subject = document.getElementById('complaint-subject').value;
+    const message = document.getElementById('complaint-message').value;
+    
+    if (!recipient || !subject || !message) {
+        alert('Please fill in all fields');
+        return;
+    }
+    
+    let recipientEmail = recipient === 'admin' ? 'admin@admin.com' : document.getElementById('teacher-dropdown').value;
+    
+    if (!recipientEmail) {
+        alert('Please select a recipient');
+        return;
+    }
+    
+    fetch('/submit_complaint', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            student_email: "{{ email }}",
+            recipient_email: recipientEmail,
+            subject: subject,
+            message: message
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert('Complaint submitted successfully!');
+            document.getElementById('complaint-subject').value = '';
+            document.getElementById('complaint-message').value = '';
+            document.getElementById('complaint-recipient').value = '';
+            document.getElementById('teacher-dropdown-container').style.display = 'none';
+            loadComplaints();
+        } else {
+            alert('Error submitting complaint: ' + data.message);
+        }
+    })
+    .catch(err => alert('Error: ' + err));
+}
+
+function displayComplaintsList(complaints) {
+    const tbody = document.getElementById('complaints-table-body');
+    tbody.innerHTML = '';
+    
+    complaints.forEach(complaint => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td style="padding: 12px; border: 1px solid #ddd;">${complaint.recipient_email}</td>
+            <td style="padding: 12px; border: 1px solid #ddd;">${complaint.subject}</td>
+            <td style="padding: 12px; border: 1px solid #ddd;">${complaint.submitted_date}</td>
+            <td style="padding: 12px; border: 1px solid #ddd;"><span style="padding: 5px 10px; background: ${complaint.status === 'Pending' ? '#ff9800' : '#43a047'}; color: white; border-radius: 3px;">${complaint.status}</span></td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+
+    </script>
+
+</body>
+</html>

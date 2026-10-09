@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IAT Analysis Report</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+min-height:100vh;
+padding:20px;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+background:white;
+border-radius:10px;
+box-shadow:0 10px 40px rgba(0,0,0,0.2);
+padding:30px;
+}
+
+header{
+text-align:center;
+margin-bottom:30px;
+border-bottom:3px solid #667eea;
+padding-bottom:20px;
+}
+
+header h1{
+font-size:28px;
+color:#333;
+margin-bottom:5px;
+}
+
+header p{
+color:#666;
+font-size:14px;
+}
+
+.controls{
+display:flex;
+gap:15px;
+flex-wrap:wrap;
+margin-bottom:30px;
+align-items:center;
+}
+
+.controls select,
+.controls button{
+padding:10px 20px;
+border-radius:5px;
+font-size:14px;
+cursor:pointer;
+border:2px solid #667eea;
+}
+
+.controls select{
+background:white;
+min-width:220px;
+}
+
+.controls button{
+background:#667eea;
+color:white;
+border:none;
+font-weight:bold;
+}
+
+.controls button:hover{
+background:#764ba2;
+}
+
+.print-btn{
+background:#43a047 !important;
+}
+
+.stats-container{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:15px;
+margin-bottom:30px;
+}
+
+.stat-card{
+padding:20px;
+border-radius:8px;
+color:white;
+text-align:center;
+background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+}
+
+.topper{
+background:linear-gradient(135deg,#f39c12 0%,#e67e22 100%);
+}
+
+.weak{
+background:linear-gradient(135deg,#e74c3c 0%,#c0392b 100%);
+}
+
+.stat-card h3{
+font-size:14px;
+margin-bottom:10px;
+}
+
+.value{
+font-size:24px;
+font-weight:bold;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+thead{
+background:#667eea;
+color:white;
+}
+
+th,td{
+padding:12px;
+text-align:left;
+border-bottom:1px solid #ddd;
+font-size:14px;
+}
+
+tbody tr:nth-child(odd){
+background:#f9f9f9;
+}
+
+tbody tr:hover{
+background:#f1f1f1;
+}
+
+.no-data{
+text-align:center;
+padding:40px;
+color:#666;
+}
+
+.footer{
+margin-top:30px;
+text-align:center;
+font-size:13px;
+color:#777;
+border-top:1px solid #ddd;
+padding-top:20px;
+}
+
+@media print{
+body{
+background:white;
+padding:0;
+}
+
+.controls{
+display:none;
+}
+
+.container{
+box-shadow:none;
+padding:0;
+max-width:100%;
+}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+<h1>📘 IAT Analysis Report</h1>
+<p>Internal Assessment Test Performance Analysis</p>
+</header>
+
+<div class="controls">
+<label><b>Select Subject:</b></label>
+
+<select id="subjectSelect">
+<option value="">-- Choose Subject --</option>
+
+{% for subject in subjects %}
+<option value="{{ subject }}" {% if subject == selected_subject %}selected{% endif %}>
+{{ subject }}
+</option>
+{% endfor %}
+
+</select>
+
+<button onclick="loadAnalysis()">Load Analysis</button>
+
+<button class="print-btn" onclick="window.print()">🖨️ Print Report</button>
+</div>
+
+{% if statistics %}
+
+<div style="background:#e3f2fd;padding:15px;border-left:4px solid #2196f3;border-radius:5px;margin-bottom:20px;">
+<b>Subject:</b> {{ selected_subject }} |
+<b>Total Students:</b> {{ statistics.total_students }} |
+<b>Generated:</b> {{ now }}
+</div>
+
+<div class="stats-container">
+
+<div class="stat-card">
+<h3>Average Marks</h3>
+<div class="value">{{ statistics.average_marks }}</div>
+</div>
+
+<div class="stat-card">
+<h3>Highest Marks</h3>
+<div class="value">{{ statistics.highest_marks }}</div>
+</div>
+
+<div class="stat-card">
+<h3>Lowest Marks</h3>
+<div class="value">{{ statistics.lowest_marks }}</div>
+</div>
+
+<div class="stat-card">
+<h3>Total Students</h3>
+<div class="value">{{ statistics.total_students }}</div>
+</div>
+
+<div class="stat-card topper">
+<h3>🏆 Topper</h3>
+<div class="value">{{ statistics.topper_marks }}</div>
+<div style="font-size:12px;margin-top:5px;">{{ statistics.topper_name }}</div>
+</div>
+
+<div class="stat-card weak">
+<h3>⚠️ Weak Students</h3>
+<div class="value">{{ statistics.weak_students_count }}</div>
+</div>
+
+</div>
+
+<h2 style="text-align:center;margin-bottom:20px;color:#333;">
+Student IAT Marks - {{ selected_subject }}
+</h2>
+
+<table>
+<thead>
+<tr>
+<th>Roll No</th>
+<th>Name</th>
+<th>Email</th>
+<th>Marks</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for row in iat_data %}
+<tr>
+<td><b>{{ row[1] }}</b></td>
+<td>{{ row[2] }}</td>
+<td>{{ row[0] }}</td>
+<td>
+<b style="color:{% if row[3] >= statistics.average_marks %}green{% else %}red{% endif %};">
+{{ row[3] }}
+</b>
+</td>
+</tr>
+{% endfor %}
+
+</tbody>
+</table>
+
+<div class="footer">
+<p>Generated On: <b>{{ now }}</b></p>
+<p>Teacher Email: <b>{{ teacher_email }}</b></p>
+</div>
+
+{% elif selected_subject %}
+
+<div class="no-data">
+<h2>No IAT Data Found</h2>
+<p>No marks available for selected subject.</p>
+</div>
+
+{% else %}
+
+<div class="no-data">
+<h2>Select a Subject</h2>
+<p>Please choose a subject to view IAT analysis.</p>
+</div>
+
+{% endif %}
+
+</div>
+
+<script>
+function loadAnalysis(){
+const subject=document.getElementById("subjectSelect").value;
+
+if(!subject){
+alert("Please select subject");
+return;
+}
+
+window.location.href=`/iat_analysis/{{ teacher_email }}?subject=${subject}`;
+}
+</script>
+
+</body>
+</html>

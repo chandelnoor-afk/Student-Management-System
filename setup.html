@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>First-time setup - Student Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles1.css') }}">
+</head>
+<body>
+    <nav>
+        <span>Student Management System</span>
+    </nav>
+    <div class="dashboard-container">
+        <div id="content-section">
+            <div class="hidden-section" style="display: block;">
+                <h2>First-time setup</h2>
+                <p>Create the administrator account. This page is shown only until an administrator exists.</p>
+                <form method="post" action="/setup">
+                    <input type="email" name="email" placeholder="Admin e-mail (ends with @admin.com)" required autocomplete="username">
+                    <input type="password" name="password" placeholder="Password (at least 8 characters)" minlength="8" required autocomplete="new-password">
+                    <input type="password" name="confirm" placeholder="Repeat the password" minlength="8" required autocomplete="new-password">
+                    <button class="login-btn" type="submit">Create administrator</button>
+                </form>
+                <p id="error">{{ error or "" }}</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

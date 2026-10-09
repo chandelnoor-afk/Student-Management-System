@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Analysis Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+        }
+
+        header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .controls select,
+        .controls button {
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .controls select {
+            background: white;
+            color: #333;
+            min-width: 200px;
+        }
+
+        .controls select:focus {
+            outline: none;
+            background: #f0f4ff;
+        }
+
+        .controls button {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+            border: none;
+        }
+
+        .controls button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .controls .print-btn {
+            background: #43a047;
+        }
+
+        .controls .print-btn:hover {
+            background: #2e7d32;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-card .value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .data-table thead {
+            background: #667eea;
+            color: white;
+        }
+
+        .data-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table tbody tr {
+            border-bottom: 1px solid #e0e0e0;
+            transition: background-color 0.3s;
+        }
+
+        .data-table tbody tr:hover {
+            background: #f5f5f5;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .data-table tbody tr:nth-child(odd) {
+            background: #f9f9f9;
+        }
+
+        .attendance-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .badge-present {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .badge-absent {
+            background: #ffcccc;
+            color: #c62828;
+        }
+
+        .score-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .score-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #43a047 0%, #667eea 100%);
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .score-bar-fill.low {
+            background: linear-gradient(90deg, #f39c12 0%, #e74c3c 100%);
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .no-data h2 {
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                padding: 0;
+                max-width: 100%;
+            }
+
+            .controls {
+                display: none;
+            }
+
+            .data-table {
+                box-shadow: none;
+            }
+
+            .data-table tbody tr:nth-child(odd) {
+                background: white;
+            }
+
+            .data-table tbody tr {
+                page-break-inside: avoid;
+            }
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .message.info {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            color: #1976d2;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            color: #999;
+            font-size: 13px;
+        }
+
+        .subject-label {
+            font-weight: 600;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📋 Attendance Analysis Report</h1>
+            <p>Student Attendance Summary and Statistics</p>
+        </header>
+
+        <div class="controls">
+            <label for="subjectSelect" style="font-weight: 600; color: #333;">Select Subject (Optional):</label>
+            <select id="subjectSelect">
+                <option value="">-- All Students --</option>
+                {% for subject in subjects %}
+                    <option value="{{ subject }}" {% if subject == selected_subject %}selected{% endif %}>{{ subject }}</option>
+                {% endfor %}
+            </select>
+            <button onclick="loadAnalysis()">Load Analysis</button>
+            <button class="print-btn" onclick="window.print()">🖨️ Print Report</button>
+        </div>
+
+        {% if attendance_data %}
+            <div class="message info">
+                <strong>Total Students:</strong> {{ attendance_data|length }} | 
+                <strong>Report Generated:</strong> {{ now }}
+            </div>
+
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h3>Total Students</h3>
+                    <div class="value">{{ attendance_data|length }}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Present Today (Sample)</h3>
+                    <div class="value">-</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Absent Today (Sample)</h3>
+                    <div class="value">-</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Overall Attendance</h3>
+                    <div class="value">
+                        {%- set avg_percentage = (attendance_data | map(attribute='percentage') | list | sum) / (attendance_data | length) if attendance_data else 0 -%}
+                        {{ "%.1f"|format(avg_percentage) }}%
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <h2 style="margin-bottom: 20px; color: #333; text-align: center;">Student Attendance Summary</h2>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">Roll No.</th>
+                            <th style="width: 25%;">Student Name</th>
+                            <th style="width: 20%;">Email</th>
+                            <th style="width: 12%;">Total Days</th>
+                            <th style="width: 12%;">Present</th>
+                            <th style="width: 12%;">Absent</th>
+                            <th style="width: 9%;">Attendance %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in attendance_data %}
+                        <tr>
+                            <td><strong>{{ record.roll }}</strong></td>
+                            <td>{{ record.name }}</td>
+                            <td>{{ record.email }}</td>
+                            <td style="text-align: center;">
+                                <span style="background: #e3f2fd; padding: 4px 8px; border-radius: 4px; font-weight: 600;">
+                                    {{ record.total_days }}
+                                </span>
+                            </td>
+                            <td style="text-align: center;">
+                                <span class="badge-present">{{ record.present_days }}</span>
+                            </td>
+                            <td style="text-align: center;">
+                                <span class="badge-absent">{{ record.absent_days }}</span>
+                            </td>
+                            <td>
+                                <div class="score-bar">
+                                    <div class="score-bar-fill {% if record.percentage < 75 %}low{% endif %}" style="width: {{ record.percentage }}%; background: {% if record.percentage >= 75 %}linear-gradient(90deg, #43a047 0%, #667eea 100%){% else %}linear-gradient(90deg, #f39c12 0%, #e74c3c 100%){% endif %};">
+                                        {{ record.percentage }}%
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="footer">
+                <p>Generated on: <strong>{{ now }}</strong></p>
+                <p>Teacher Email: <strong>{{ teacher_email }}</strong></p>
+                <p style="color: #666; margin-top: 10px; font-size: 12px;">
+                    Note: Attendance percentage is calculated based on attendance records available in the system.
+                </p>
+            </div>
+        {% elif attendance_data is not none %}
+            <div class="no-data">
+                <h2>No Attendance Data Found</h2>
+                <p>No attendance records are available yet.</p>
+            </div>
+        {% else %}
+            <div class="no-data">
+                <h2>Select a Subject or View All</h2>
+                <p>Please select a subject or click "Load Analysis" to view attendance records.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function loadAnalysis() {
+            const subject = document.getElementById('subjectSelect').value;
+            if (subject) {
+                window.location.href = `/attendance_analysis/{{ teacher_email }}?subject=${subject}`;
+            } else {
+                window.location.href = `/attendance_analysis/{{ teacher_email }}`;
+            }
+        }
+
+        // Allow Enter key to load analysis
+        document.getElementById('subjectSelect').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                loadAnalysis();
+            }
+        });
+    </script>
+</body>
+</html>
